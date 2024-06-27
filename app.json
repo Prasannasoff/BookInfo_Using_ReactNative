@@ -1,5 +1,15 @@
 {
   "expo": {
+    "plugins": [
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/Poppins-Medium.ttf"
+          ]
+        }
+      ]
+    ],
     "name": "bookStore",
     "slug": "bookStore",
     "version": "1.0.0",
