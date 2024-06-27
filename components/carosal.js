@@ -8,7 +8,7 @@ const { width } = Dimensions.get('window');
 const Carousel = () => {
  
   return (
-<View style={{alignItems:'center',justifyContent:'center',flex:1}}><Text>Soon!!!</Text></View>
+<View style={{alignItems:'center',justifyContent:'center',flex:1}}><Text>Comming Soon!!!</Text></View>
   );
 };
 
