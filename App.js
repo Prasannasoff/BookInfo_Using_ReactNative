@@ -11,12 +11,19 @@ import { FontAwesome } from '@expo/vector-icons'; // Assuming you are using Font
 import 'react-native-gesture-handler';
 import 'react-native-reanimated';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-
+import BookInfo from './screens/BookInfo'
 import Carousel from './components/carosal';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-
+const BookStackNavigator = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="BookListScreen" component={BookList} options={{ headerShown: false }} />
+      <Stack.Screen name="BookInfo" component={BookInfo}  />
+    </Stack.Navigator>
+  );
+};
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -55,7 +62,7 @@ export default function App() {
           })}
         >
           <Tab.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
-          <Tab.Screen name="BookList" component={BookList} options={{
+          <Tab.Screen name="BookList" component={BookStackNavigator} options={{
             headerShown: false, // You can customize the title here if needed
           }} />
 
@@ -78,7 +85,7 @@ const styles = StyleSheet.create({
   tabBarStyle: {
     height: 60,
     borderTopWidth: 0,
-   
+
     elevation: 20,
     alignItems: 'center',
     paddingBottom: 5,

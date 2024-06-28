@@ -10,12 +10,13 @@ import {
     View,
     Image,
 } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 function BookList({ navigation }) {
     const [bookData, setBookData] = useState([]);
     const [dupBook, setDupBook] = useState([]);
     const [name, setName] = useState('');
-    const [popularBooks,setPopularBook]=useState([]);
+    const [popularBooks, setPopularBook] = useState([]);
 
     useEffect(() => {
         const getData = async () => {
@@ -39,7 +40,13 @@ function BookList({ navigation }) {
                     bookName: item.volumeInfo.title,
                     image: item.volumeInfo.imageLinks?.thumbnail || 'https://via.placeholder.com/120x180',
                     author: item.volumeInfo.authors ? item.volumeInfo.authors[0] : 'Unknown Author',
-                    authorImage: 'https://via.placeholder.com/70'
+                    authorImage: 'https://via.placeholder.com/70',
+                    averageRating:item.volumeInfo.averageRating,
+                    ratingsCount:item.volumeInfo.ratingsCount,
+                    description:item.volumeInfo.description,
+
+                
+
                 }));
 
                 setBookData(booksPopular);
@@ -56,11 +63,12 @@ function BookList({ navigation }) {
 
 
     const filterBySearch = (text) => {
+        setName(text);
         if (text === '') {
             setBookData(popularBooks); // Reset to popular books when search is cleared
         }
         else {
-            setName(text);
+
             const filteredBooks = dupBook.filter(book =>
                 book.volumeInfo.title.toLowerCase().includes(text.toLowerCase())
             );
@@ -76,15 +84,16 @@ function BookList({ navigation }) {
     const displayBooks = ({ item }) => {
         return (
             <View>
-                <View style={[styles.bookFrame]}>
+                <TouchableOpacity style={[styles.bookFrame]} onPress={()=>navigation.navigate("BookInfo",{data:item})}>
                     <View style={[styles.design]} />
                     <View style={[styles.bookAlignment]}>
                         <View style={[styles.ShadowContainer]}>
                             <Image source={{ uri: item.image }} style={[styles.bookimg]} />
                         </View>
                         <Text style={{ fontFamily: 'Poppins', fontSize: 10 }}>{item.bookName}</Text>
+                        
                     </View>
-                </View>
+                </TouchableOpacity>
 
 
             </View>
@@ -98,7 +107,7 @@ function BookList({ navigation }) {
                     <View style={[styles.box2]}>
                         <View style={styles.Avatar}>
                             {/* <Image source={{ uri: item.authorImage }} style={{ width: 70, height: 70, borderRadius: 100 }} /> */}
-                        <Text style={{ fontFamily: "Poppins", fontSize: 13 }}>{item.author}</Text>
+                            <Text style={{ fontFamily: "Poppins", fontSize: 13 }}>{item.author}</Text>
 
                         </View>
                     </View>
@@ -170,10 +179,10 @@ const styles = StyleSheet.create({
         margin: 7,
         justifyContent: 'space-between',
         paddingRight: 10,
-        paddingLeft:10,
+        paddingLeft: 10,
     },
-    input:{
-        flex:1,
+    input: {
+        flex: 1,
 
     },
     header: {
@@ -224,7 +233,7 @@ const styles = StyleSheet.create({
         width: 120,
         height: 180,
         borderRadius: 10,
-        opacity: 0.8,
+        opacity: 0.9,
     },
     Scroll2: {
         alignItems: 'center',
@@ -250,6 +259,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         gap: 10,
-    
+
     },
 });
