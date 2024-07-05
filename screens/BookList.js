@@ -9,6 +9,7 @@ import {
     Text,
     View,
     Image,
+    KeyboardAvoidingView
 } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
@@ -41,11 +42,11 @@ function BookList({ navigation }) {
                     image: item.volumeInfo.imageLinks?.thumbnail || 'https://via.placeholder.com/120x180',
                     author: item.volumeInfo.authors ? item.volumeInfo.authors[0] : 'Unknown Author',
                     authorImage: 'https://via.placeholder.com/70',
-                    averageRating:item.volumeInfo.averageRating,
-                    ratingsCount:item.volumeInfo.ratingsCount,
-                    description:item.volumeInfo.description,
+                    averageRating: item.volumeInfo.averageRating,
+                    ratingsCount: item.volumeInfo.ratingsCount,
+                    description: item.volumeInfo.description,
 
-                
+
 
                 }));
 
@@ -84,14 +85,15 @@ function BookList({ navigation }) {
     const displayBooks = ({ item }) => {
         return (
             <View>
-                <TouchableOpacity style={[styles.bookFrame]} onPress={()=>navigation.navigate("BookInfo",{data:item})}>
+
+                <TouchableOpacity style={[styles.bookFrame]} onPress={() => navigation.navigate("BookInfo", { data: item })}>
                     <View style={[styles.design]} />
                     <View style={[styles.bookAlignment]}>
                         <View style={[styles.ShadowContainer]}>
                             <Image source={{ uri: item.image }} style={[styles.bookimg]} />
                         </View>
                         <Text style={{ fontFamily: 'Poppins', fontSize: 10 }}>{item.bookName}</Text>
-                        
+
                     </View>
                 </TouchableOpacity>
 
@@ -119,15 +121,17 @@ function BookList({ navigation }) {
     return (
         <SafeAreaView style={{ backgroundColor: 'white', flex: 1 }}>
             <View style={[styles.Container]}>
-                <View style={[styles.searchBar]}>
-                    <TextInput
-                        style={styles.input}
-                        value={name}
-                        onChangeText={filterBySearch}
-                        placeholder='Search the Book'
-                    />
-                    <FontAwesome name="search" size={20} color="#CBCDCC" />
-                </View>
+                {/* <KeyboardAvoidingView> */}
+                    <View style={[styles.searchBar]}>
+                        <TextInput
+                            style={styles.input}
+                            value={name}
+                            onChangeText={filterBySearch}
+                            placeholder='Search the Book'
+                        />
+                        <FontAwesome name="search" size={20} color="#CBCDCC" />
+                    </View>
+                {/* </KeyboardAvoidingView> */}
 
                 <View style={[styles.header]}>
                     <Text style={{ fontSize: 35, fontFamily: 'Poppins', paddingTop: 10, position: 'relative' }}>Popular</Text>
@@ -159,6 +163,7 @@ function BookList({ navigation }) {
 
 
             </View>
+
         </SafeAreaView>
     );
 }
