@@ -11,7 +11,7 @@ import {
     Image,
     KeyboardAvoidingView
 } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { TouchableOpacity, GestureHandlerRootView } from 'react-native-gesture-handler';
 
 function BookList({ navigation }) {
     const [bookData, setBookData] = useState([]);
@@ -119,9 +119,10 @@ function BookList({ navigation }) {
     };
 
     return (
-        <SafeAreaView style={{ backgroundColor: 'white', flex: 1 }}>
-            <View style={[styles.Container]}>
-                {/* <KeyboardAvoidingView> */}
+        <GestureHandlerRootView style={{ flex: 1 }}>
+            <SafeAreaView style={{ backgroundColor: 'white', flex: 1 }}>
+                <View style={[styles.Container]}>
+                    {/* <KeyboardAvoidingView> */}
                     <View style={[styles.searchBar]}>
                         <TextInput
                             style={styles.input}
@@ -131,40 +132,41 @@ function BookList({ navigation }) {
                         />
                         <FontAwesome name="search" size={20} color="#CBCDCC" />
                     </View>
-                {/* </KeyboardAvoidingView> */}
+                    {/* </KeyboardAvoidingView> */}
 
-                <View style={[styles.header]}>
-                    <Text style={{ fontSize: 35, fontFamily: 'Poppins', paddingTop: 10, position: 'relative' }}>Popular</Text>
-                    <Text style={{ fontSize: 13, fontFamily: 'Poppins', paddingTop: 10, position: 'relative' }}>see All</Text>
+                    <View style={[styles.header]}>
+                        <Text style={{ fontSize: 35, fontFamily: 'Poppins', paddingTop: 10, position: 'relative' }}>Popular</Text>
+                        <Text style={{ fontSize: 13, fontFamily: 'Poppins', paddingTop: 10, position: 'relative' }}>see All</Text>
+                    </View>
+
+                    <View style={[styles.Scroll]}>
+                        <FlatList
+                            data={bookData}
+                            renderItem={displayBooks}
+                            keyExtractor={(item) => item.id}
+                            horizontal={true}
+                            showsHorizontalScrollIndicator={false}
+                        />
+                    </View>
+                    <View style={[styles.header]}>
+                        <Text style={{ fontSize: 35, fontFamily: 'Poppins', paddingTop: 10, position: 'relative' }}>Author</Text>
+                        <Text style={{ fontSize: 13, fontFamily: 'Poppins', paddingTop: 10, position: 'relative' }}>see All</Text>
+                    </View>
+                    <View style={[styles.Scroll2]}>
+                        <FlatList
+                            data={bookData}
+                            renderItem={displayAuthors}
+                            keyExtractor={(item) => item.id}
+                            horizontal={true}
+                            showsHorizontalScrollIndicator={false}
+                        />
+                    </View>
+
+
                 </View>
 
-                <View style={[styles.Scroll]}>
-                    <FlatList
-                        data={bookData}
-                        renderItem={displayBooks}
-                        keyExtractor={(item) => item.id}
-                        horizontal={true}
-                        showsHorizontalScrollIndicator={false}
-                    />
-                </View>
-                <View style={[styles.header]}>
-                    <Text style={{ fontSize: 35, fontFamily: 'Poppins', paddingTop: 10, position: 'relative' }}>Author</Text>
-                    <Text style={{ fontSize: 13, fontFamily: 'Poppins', paddingTop: 10, position: 'relative' }}>see All</Text>
-                </View>
-                <View style={[styles.Scroll2]}>
-                    <FlatList
-                        data={bookData}
-                        renderItem={displayAuthors}
-                        keyExtractor={(item) => item.id}
-                        horizontal={true}
-                        showsHorizontalScrollIndicator={false}
-                    />
-                </View>
-
-
-            </View>
-
-        </SafeAreaView>
+            </SafeAreaView>
+        </GestureHandlerRootView>
     );
 }
 

@@ -10,7 +10,7 @@ import { useFonts } from 'expo-font';
 import { FontAwesome } from '@expo/vector-icons';
 
 import BookInfo from './screens/BookInfo';
-import Carousel from './components/carosal';
+import Carousel from './screens/carosal';
 import userRegister from './screens/userRegister';
 
 const Stack = createNativeStackNavigator();
@@ -69,7 +69,7 @@ export default function App() {
   return (
 
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="userRegister">
+      <Stack.Navigator initialRouteName="MainTabs">
         <Stack.Screen name="userRegister" component={userRegister} options={{ headerShown: false }} />
         <Stack.Screen name="MainTabs" component={MainTabNavigator} options={{ headerShown: false }} />
       </Stack.Navigator>

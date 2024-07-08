@@ -11,34 +11,36 @@ import {
     View,
     Image,
 } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import { ScrollView, GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const BookInfo = ({ navigation, route }) => {
     const { data } = route.params;
 
     return (
-        <SafeAreaView>
-            <ScrollView>
-                <View style={[styles.Container]}>
-                    <View style={[styles.imageFrame]}>
-                        <Image source={{ "uri": data.image }} style={[styles.bookImage]} />
-                    </View>
-                    <View style={[styles.bookDetails]}>
-                        <Text style={{ fontFamily: 'Poppins', fontSize: 40 }}>{data.bookName}</Text>
-                        <View style={[styles.Rating]}>
-                            <FontAwesome name='star' size={15} color='#D4A056' style={{}} />
-                            <Text style={{ fontFamily: 'Poppins', fontSize: 16 }}>{data.averageRating}/5</Text>
-                            <Text style={{ fontFamily: 'Poppins', fontSize: 15, color: 'grey' }}>({data.ratingsCount} Rated)</Text>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+            <SafeAreaView>
+                <ScrollView>
+                    <View style={[styles.Container]}>
+                        <View style={[styles.imageFrame]}>
+                            <Image source={{ "uri": data.image }} style={[styles.bookImage]} />
                         </View>
-                        <View style={[styles.desc]}>
-                            <Text style={{ fontFamily: 'Poppins', fontSize: 20}}>Description</Text>
-                            <Text style={{ fontFamily: 'Poppins', fontSize: 12, color: 'grey' ,marginLeft:23}}>{data.description}</Text>
+                        <View style={[styles.bookDetails]}>
+                            <Text style={{ fontFamily: 'Poppins', fontSize: 35 }}>{data.bookName}</Text>
+                            <View style={[styles.Rating]}>
+                                <FontAwesome name='star' size={15} color='#D4A056' style={{}} />
+                                <Text style={{ fontFamily: 'Poppins', fontSize: 12 }}>{data.averageRating}/5</Text>
+                                <Text style={{ fontFamily: 'Poppins', fontSize: 12, color: 'grey' }}>({data.ratingsCount} Rated)</Text>
+                            </View>
+                            <View style={[styles.desc]}>
+                                <Text style={{ fontFamily: 'Poppins', fontSize: 20 }}>Description</Text>
+                                <Text style={{ fontFamily: 'Poppins', fontSize: 12, color: 'grey', marginLeft: 23 }}>{data.description}</Text>
 
+                            </View>
                         </View>
                     </View>
-                </View>
-            </ScrollView>
-        </SafeAreaView>
+                </ScrollView>
+            </SafeAreaView>
+        </GestureHandlerRootView>
     );
 };
 
@@ -59,17 +61,17 @@ const styles = StyleSheet.create({
     },
     bookDetails: {
         paddingLeft: 30,
-        paddingRight:20
-       
+        paddingRight: 20
+
     },
     Rating: {
         flexDirection: 'row',
         alignItems: 'center',
         gap: 5,
-        marginTop: -15
+        marginTop: -10
     },
-    desc:{
-        marginTop:5,
-        marginLeft:3
+    desc: {
+        marginTop: 5,
+        marginLeft: 3
     }
 })
