@@ -35,11 +35,11 @@ function HomeScreen({ navigation }) {
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <View style={styles.img}>
-                <Image source={require('../assets/man-reading-book-white-background-removebg-preview 1.png')} style={{ width: 350, height: 380, top: 76 }} />
+                <Image source={require('./images/man-reading-book-white-background-removebg-preview 1.png')} style={{ width: 350, height: 380, top: 76 }} />
             </View>
             <View style={styles.Container}>
                 <Animated.View style={[styles.design, {
-                    height: windowHeight > 500 ? 380 : 500,
+                    height: windowHeight > 500 ? 340 : 500,
                     width: windowWidth > 500 ? windowWidth : windowWidth,
                     transform: [{ translateY }] // Apply the animated value to the transform
                 }]}>
