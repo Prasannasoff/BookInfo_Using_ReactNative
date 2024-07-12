@@ -1,96 +1,108 @@
 import React, { useState, useRef } from 'react';
-import { Dimensions, Animated, StyleSheet, View, Text, Image, FlatList, ImageBackground } from 'react-native';
-import { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
+import { Dimensions, StyleSheet, View, Text, Image, FlatList, ImageBackground } from 'react-native';
 import { GestureHandlerRootView, PanGestureHandler, ScrollView } from 'react-native-gesture-handler';
 import Pagination from '../components/Pagination';
+import RenderItem from '../components/RenderItem';
+import Animated, { useSharedValue, useAnimatedScrollHandler, useAnimatedRef } from 'react-native-reanimated';
 const { width: WSIZE, height: HSIZE } = Dimensions.get('window')
 
 const CategoryData = [
   {
     id: 1,
     category: "AutoBiography",
-    image: require('./images/autobiography.jpg')
+    image: require('./images/autobiography.jpg'),
+    backgroundColor: '#ffa3ce',
   },
   {
     id: 2,
     category: "Thriller",
-    image: require('./images/GHOST CATEGORY.jpg')
+    image: require('./images/GHOST CATEGORY.jpg'),
+    backgroundColor: '#bae4fd',
   },
   {
     id: 3,
     category: "Comics",
-    image: require('./images/Comics.jpg')
+    image: require('./images/Comics.jpg'),
+    backgroundColor: '#faeb8a',
+
   }
 ];
 const { width } = Dimensions.get('window');
 
 const Carousel = () => {
-  const [index, setIndex] = useState(0);
-  const scrollX = useRef(new Animated.Value(0)).current; // first animated.Value for Scroll X is 0 then when user swipe, the scrollX value also moves since we are updating in Animated event
 
-  const handleOnScroll = event => {
-    Animated.event( // It allows you to map native events (such as scroll, gesture, and pan events) directly to animated values. This is particularly useful when you need to drive animations based on user interactions or other dynamic events. 
-      [
-        {
-          nativeEvent: {
-            contentOffset: { //contentOffset refers to the current scroll position of the list.
-              x: scrollX,
-            },
-          },
-        },
-      ],
-      {
-        useNativeDriver: false,
-      },
-    )(event);
+  const flatListIndex = useSharedValue(0);
+
+  const x = useSharedValue(0); // first animated.Value for Scroll X is 0 then when user swipe, the scrollX value also moves since we are updating in Animated event
+  
+  const onScroll = useAnimatedScrollHandler({
+    onScroll: event => {
+      x.value = event.contentOffset.x;
+    },
+  });
+  // const handleOnScroll = event => {
+  //   Animated.event( // It allows you to map native events (such as scroll, gesture, and pan events) directly to animated values. This is particularly useful when you need to drive animations based on user interactions or other dynamic events. 
+  //     [
+  //       {
+  //         nativeEvent: {
+  //           contentOffset: { //contentOffset refers to the current scroll position of the list.
+  //             x: scrollX,
+  //           },
+  //         },
+  //       },
+  //     ],
+  //     {
+  //       useNativeDriver: false,
+  //     },
+  //   )(event);
+  // };
+
+  const onViewableItemsChanged = ({ viewableItems }) => {
+    if (viewableItems[0]?.index !== null) {
+      flatListIndex.value = viewableItems[0].index;
+    }
   };
 
-  const handleOnViewableItemsChanged = useRef(({ viewableItems }) => {
-    // console.log('viewableItems', viewableItems);
-    setIndex(viewableItems[0].index);
-  }).current;
 
 
-  const displayData = ({ item }) => {
-
-    return (
-      <View style={{ flex: 1, marginTop: 50 }}>
-        <ImageBackground source={item.image} style={{ width: WSIZE, height: HSIZE }}>
-          <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
-            <Text style={{ fontSize: 50, color: 'white' }}>{item.category}</Text>
-          </View>
-        </ImageBackground>
-
-
-      </View>
-    )
-
-
-  }
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
 
-      <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-        <FlatList data={CategoryData}
-          renderItem={displayData}
-          keyExtractor={(item) => item.id}
-          horizontal={true}
-          showsHorizontalScrollIndicator
-          bounces={false}
-          pagingEnabled //This helps to move the carousal page by page.The flow will not be stopped in the middle
 
-          snapToAlignment="center"
+    <View style={styles.container}>
+      <Animated.FlatList
+        data={CategoryData}
+       
+        onScroll={onScroll}
+        renderItem={({ item, index }) => {
+          return <RenderItem item={item} index={index} x={x} />;
+        }}
+        keyExtractor={item => item.id.toString()}
+        horizontal={true}
+        showsHorizontalScrollIndicator={false}
+        bounces={false}
+        pagingEnabled //This helps to move the carousal page by page.The flow will not be stopped in the middle
 
-          onScroll={handleOnScroll}
-          onViewableItemsChanged={handleOnViewableItemsChanged} // An array of items that are currently viewable which means when we scroll to 2nd page the content in second page can be used.Here we are doing to get the index.
-           // view area coverage percentage
-        />
-        <Pagination data={CategoryData} scrollX={scrollX} index={index}></Pagination>
-      </View>
+        snapToAlignment="center"
+        scrollEventThrottle={16}
 
-    </GestureHandlerRootView>
+        onViewableItemsChanged={onViewableItemsChanged} // An array of items that are currently viewable which means when we scroll to 2nd page the content in second page can be used.Here we are doing to get the index.
+        // view area coverage percentage
+        viewabilityConfig={{
+          minimumViewTime: 300,
+          viewAreaCoveragePercentThreshold: 10,
+        }}
+      />
+      {/* <Pagination data={CategoryData} scrollX={x} ></Pagination> */}
+    </View>
+
+
   );
 };
 
 
 export default Carousel;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});
