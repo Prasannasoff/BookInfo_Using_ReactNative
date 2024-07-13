@@ -5,7 +5,7 @@
         "expo-font",
         {
           "fonts": [
-            "./assets/fonts/Poppins-Medium.ttf"
+            "./fonts/Poppins-Medium.ttf"
           ]
         }
       ]

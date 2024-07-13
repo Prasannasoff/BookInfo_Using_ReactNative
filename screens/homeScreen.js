@@ -48,7 +48,7 @@ function HomeScreen({ navigation }) {
                         <View>
                             <View style={{ width: 230, alignItems: 'center', justifyContent: 'center' }}>
                                 <Text style={{ fontFamily: 'Poppins', fontSize: 16, fontWeight: '200', color: '#808080' }}>
-                                    Buy and gain Knowledge from your favourite
+                                    Buy and read your favourite
                                 </Text>
                             </View>
                             <View style={{ width: 200, alignItems: 'center', justifyContent: 'center' }}>

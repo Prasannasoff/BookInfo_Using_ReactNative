@@ -55,7 +55,8 @@ const MainTabNavigator = () => {
 
 export default function App() {
   const [fontsLoaded] = useFonts({
-    'Poppins': require('./assets/fonts/Poppins-Medium.ttf'),
+    'Poppins': require('./fonts/Poppins-Medium.ttf'),
+
   });
 
   if (!fontsLoaded) {
