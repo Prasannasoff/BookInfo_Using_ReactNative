@@ -8,7 +8,7 @@ import HomeScreen from './screens/homeScreen';
 import BookList from './screens/BookList';
 import { useFonts } from 'expo-font';
 import { FontAwesome } from '@expo/vector-icons';
-
+import AddScreen from './screens/AddScreen';
 import BookInfo from './screens/BookInfo';
 import Carousel from './screens/carosal';
 import userRegister from './screens/userRegister';
@@ -49,6 +49,8 @@ const MainTabNavigator = () => {
       <Tab.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
       <Tab.Screen name="BookList" component={BookStackNavigator} options={{ headerShown: false }} />
       <Tab.Screen name="Carousal" component={Carousel} options={{ headerShown: false }} />
+      <Tab.Screen name="AddScreen" component={AddScreen} options={{ headerShown: false }} />
+
     </Tab.Navigator>
   );
 };
@@ -70,7 +72,7 @@ export default function App() {
   return (
 
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="MainTabs">
+      <Stack.Navigator initialRouteName="userRegister">
         <Stack.Screen name="userRegister" component={userRegister} options={{ headerShown: false }} />
         <Stack.Screen name="MainTabs" component={MainTabNavigator} options={{ headerShown: false }} />
       </Stack.Navigator>

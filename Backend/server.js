@@ -6,7 +6,9 @@ const dbConfig = require("./config/dbConfig"); // Assuming this file correctly s
 app.use(express.json());
 app.use(cors());
 const bookDetailsRouter=require("./routes/bookDetailsRouter")
+const adminRouter=require("./routes/adminRouter")
 app.use("/api/bookDetails",bookDetailsRouter)
+app.use("/api/adminAuth",adminRouter)
 const port = process.env.PORT || 5000;
 
 app.get("/", (req, res) => res.send("Hello World!"));

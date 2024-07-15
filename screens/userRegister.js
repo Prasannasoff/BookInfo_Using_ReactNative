@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, ScrollView } from 'react-native';
 import { initializeApp } from '@firebase/app';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from '@firebase/auth';
+import axios from 'axios'; // Add axios for making HTTP requests
 
 // Firebase configuration
 const firebaseConfig = {
@@ -49,7 +50,7 @@ const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogi
     );
 }
 
-export default userRegister = ({ navigation }) => {
+const UserRegister = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [user, setUser] = useState(null); // Track user authentication state
@@ -64,25 +65,32 @@ export default userRegister = ({ navigation }) => {
         return () => unsubscribe();
     }, [auth]);
 
+    const handleSignOut = async () => {
+        try {
+            await signOut(auth);
+            console.log('User logged out successfully!');
+            setUser(null); // Clear user state
+        } catch (error) {
+            console.error('Sign-out error:', error.message);
+        }
+    };
+
     const handleAuthentication = async () => {
         try {
-            if (user) {
-                // If user is already authenticated, log out
-                console.log('User logged out successfully!');
-                await signOut(auth);
-            } else {
-                // Sign in or sign up
-                if (isLogin) {
-                    // Sign in
-                    await signInWithEmailAndPassword(auth, email, password);
-                    console.log('User signed in successfully!');
-                    navigation.navigate('Home'); // Navigate to HomeScreen
-                } else {
-                    // Sign up
-                    await createUserWithEmailAndPassword(auth, email, password);
-                    console.log('User created successfully!');
+            if (isLogin) {
+                // Sign in
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const idToken = await userCredential.user.getIdToken(); // Get ID token
+                console.log('User signed in successfully!', idToken);
 
-                }
+                // Send ID token to your backend
+                await axios.post('http://192.168.0.109:5000/api/adminAuth/authenticate', { idToken });
+
+                navigation.navigate('MainTabs'); // Navigate to HomeScreen
+            } else {
+                // Sign up
+                await createUserWithEmailAndPassword(auth, email, password);
+                console.log('User created successfully!');
             }
         } catch (error) {
             console.error('Authentication error:', error.message);
@@ -91,15 +99,22 @@ export default userRegister = ({ navigation }) => {
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
-            <AuthScreen
-                email={email}
-                setEmail={setEmail}
-                password={password}
-                setPassword={setPassword}
-                isLogin={isLogin}
-                setIsLogin={setIsLogin}
-                handleAuthentication={handleAuthentication}
-            />
+            {user ? (
+                <View style={styles.authContainer}>
+                    <Text style={styles.emailText}>Welcome, {user.email}</Text>
+                    <Button title="Sign Out" onPress={handleSignOut} color="#e74c3c" />
+                </View>
+            ) : (
+                <AuthScreen
+                    email={email}
+                    setEmail={setEmail}
+                    password={password}
+                    setPassword={setPassword}
+                    isLogin={isLogin}
+                    setIsLogin={setIsLogin}
+                    handleAuthentication={handleAuthentication}
+                />
+            )}
         </ScrollView>
     );
 }
@@ -149,3 +164,5 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
 });
+
+export default UserRegister;

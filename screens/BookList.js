@@ -22,36 +22,37 @@ function BookList({ navigation }) {
     useEffect(() => {
         const getData = async () => {
             try {
-                const response = await axios.get(
-                    'https://www.googleapis.com/books/v1/volumes?q=subject:fiction&maxResults=40'
-                );
-                const books = response.data.items;
-                const sortedBooks = books
-                    .filter((book) => book.volumeInfo.averageRating && book.volumeInfo.ratingsCount)
-                    .sort((a, b) => {
-                        if (b.volumeInfo.averageRating === a.volumeInfo.averageRating) {
-                            return b.volumeInfo.ratingsCount - a.volumeInfo.ratingsCount;
-                        }
-                        return b.volumeInfo.averageRating - a.volumeInfo.averageRating;
-                    })
-                    .slice(0, 5); // Slice to get only top 5 books
+                // const response = await axios.get(
+                //     'https://www.googleapis.com/books/v1/volumes?q=subject:fiction&maxResults=40'
+                // );
+                const response = await axios.get('http://192.168.0.109:5000/api/bookDetails/getAllBooks');
+                const books = response.data;
+                // const sortedBooks = books
+                //     .filter((book) => book.volumeInfo.averageRating && book.volumeInfo.ratingsCount)
+                //     .sort((a, b) => {
+                //         if (b.volumeInfo.averageRating === a.volumeInfo.averageRating) {
+                //             return b.volumeInfo.ratingsCount - a.volumeInfo.ratingsCount;
+                //         }
+                //         return b.volumeInfo.averageRating - a.volumeInfo.averageRating;
+                //     })
+                //     .slice(0, 5); // Slice to get only top 5 books
 
-                const booksPopular = sortedBooks.map(item => ({
-                    id: item.id,
-                    bookName: item.volumeInfo.title,
-                    image: item.volumeInfo.imageLinks?.thumbnail || 'https://via.placeholder.com/120x180',
-                    author: item.volumeInfo.authors ? item.volumeInfo.authors[0] : 'Unknown Author',
-                    authorImage: 'https://via.placeholder.com/70',
-                    averageRating: item.volumeInfo.averageRating,
-                    ratingsCount: item.volumeInfo.ratingsCount,
-                    description: item.volumeInfo.description,
+                // const booksPopular = sortedBooks.map(item => ({
+                //     id: item.id,
+                //     bookName: item.volumeInfo.title,
+                //     image: item.volumeInfo.imageLinks?.thumbnail || 'https://via.placeholder.com/120x180',
+                //     author: item.volumeInfo.authors ? item.volumeInfo.authors[0] : 'Unknown Author',
+                //     authorImage: 'https://via.placeholder.com/70',
+                //     averageRating: item.volumeInfo.averageRating,
+                //     ratingsCount: item.volumeInfo.ratingsCount,
+                //     description: item.volumeInfo.description,
 
 
 
-                }));
+                // }));
 
-                setBookData(booksPopular);
-                setPopularBook(booksPopular);
+                setBookData(books);
+                setPopularBook(books);
 
                 setDupBook(books);
             } catch (error) {
@@ -71,15 +72,16 @@ function BookList({ navigation }) {
         else {
 
             const filteredBooks = dupBook.filter(book =>
-                book.volumeInfo.title.toLowerCase().includes(text.toLowerCase())
+                book.bookName.toLowerCase().includes(text.toLowerCase())
             );
-            setBookData(filteredBooks.map(item => ({
-                id: item.id,
-                bookName: item.volumeInfo.title,
-                image: item.volumeInfo.imageLinks?.thumbnail || 'https://via.placeholder.com/120x180',
-                author: item.volumeInfo.authors ? item.volumeInfo.authors[0] : 'Unknown Author',
-                authorImage: 'https://via.placeholder.com/70' // Replace this with actual author image URL if available
-            })));
+            // setBookData(filteredBooks.map(item => ({
+            //     id: item.id,
+            //     bookName: item.volumeInfo.title,
+            //     image: item.volumeInfo.imageLinks?.thumbnail || 'https://via.placeholder.com/120x180',
+            //     author: item.volumeInfo.authors ? item.volumeInfo.authors[0] : 'Unknown Author',
+            //     authorImage: 'https://via.placeholder.com/70' // Replace this with actual author image URL if available
+            // })));
+            setBookData(filteredBooks)
         }
     };
     const displayBooks = ({ item }) => {
@@ -93,6 +95,7 @@ function BookList({ navigation }) {
                             <Image source={{ uri: item.image }} style={[styles.bookimg]} />
                         </View>
                         <Text style={{ fontFamily: 'Poppins', fontSize: 10 }}>{item.bookName}</Text>
+
 
                     </View>
                 </TouchableOpacity>
@@ -143,7 +146,7 @@ function BookList({ navigation }) {
                         <FlatList
                             data={bookData}
                             renderItem={displayBooks}
-                            keyExtractor={(item) => item.id}
+                            keyExtractor={(item) => item._id}
                             horizontal={true}
                             showsHorizontalScrollIndicator={false}
                         />
@@ -156,7 +159,7 @@ function BookList({ navigation }) {
                         <FlatList
                             data={bookData}
                             renderItem={displayAuthors}
-                            keyExtractor={(item) => item.id}
+                            keyExtractor={(item) => item._id}
                             horizontal={true}
                             showsHorizontalScrollIndicator={false}
                         />

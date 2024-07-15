@@ -12,7 +12,7 @@ function RenderItem({ item, index, x, navigation }) {
                 index * WSIZE,
                 (index + 1) * WSIZE,
             ],
-            [0.2, 2, 0], //Atfirst the scale will be middle(i.e when not scrolling the scale will be 2),When we scroll from first page to second page,Then during scrolling the right end output range (i.e 0.2) scale will be applied to first page and left end(i.e 1) applied to second page
+            [1.5, 8, 8], //Atfirst the scale will be middle(i.e when not scrolling the scale will be 2),When we scroll from first page to second page,Then during scrolling the right end output range (i.e 0.2) scale will be applied to first page and left end(i.e 1) applied to second page
             Extrapolation.CLAMP,
         );
 
@@ -83,10 +83,10 @@ const styles = StyleSheet.create({
     },
     CircleAnimation: {
         position: 'absolute',
-        alignItems: 'center',
-        width: WSIZE / 2.2,
-        height: HSIZE / 2.4,
-        borderRadius:10,
+        top:10,
+        width: WSIZE / 1.7,
+        height: HSIZE / 4,
+        borderRadius:200,
        
 
 

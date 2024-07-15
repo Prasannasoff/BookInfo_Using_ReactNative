@@ -19,7 +19,7 @@ const bookSchema = mongoose.Schema({
     },
     image: {
         type: String,
-        required: true,
+        default: null
     },
     overview: {
         type: String,
@@ -28,6 +28,10 @@ const bookSchema = mongoose.Schema({
     No_of_Puchased: {
         type: Number,
         default: 0
+    },
+    category: {
+        type: String,
+        required: true
     }
 
 
