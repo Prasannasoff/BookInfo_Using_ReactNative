@@ -12,6 +12,10 @@ import AddScreen from './screens/AddScreen';
 import BookInfo from './screens/BookInfo';
 import Carousel from './screens/carosal';
 import userRegister from './screens/userRegister';
+import LogOut from './screens/LogOut'
+
+import { Provider } from 'react-redux';
+import { store } from './redux/store';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -19,6 +23,7 @@ const Tab = createBottomTabNavigator();
 const BookStackNavigator = () => {
   return (
     <Stack.Navigator>
+    
       <Stack.Screen name="BookListScreen" component={BookList} options={{ headerShown: false }} />
       <Stack.Screen name="BookInfo" component={BookInfo} />
     </Stack.Navigator>
@@ -51,6 +56,8 @@ const MainTabNavigator = () => {
       <Tab.Screen name="Carousal" component={Carousel} options={{ headerShown: false }} />
       <Tab.Screen name="AddScreen" component={AddScreen} options={{ headerShown: false }} />
 
+
+
     </Tab.Navigator>
   );
 };
@@ -70,14 +77,15 @@ export default function App() {
   }
 
   return (
-
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="userRegister">
-        <Stack.Screen name="userRegister" component={userRegister} options={{ headerShown: false }} />
-        <Stack.Screen name="MainTabs" component={MainTabNavigator} options={{ headerShown: false }} />
-      </Stack.Navigator>
-      <StatusBar style="auto" />
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="userRegister">
+          <Stack.Screen name="userRegister" component={userRegister} options={{ headerShown: false }} />
+          <Stack.Screen name="MainTabs" component={MainTabNavigator} options={{ headerShown: false }} />
+        </Stack.Navigator>
+        <StatusBar style="auto" />
+      </NavigationContainer>
+    </Provider>
 
   );
 }

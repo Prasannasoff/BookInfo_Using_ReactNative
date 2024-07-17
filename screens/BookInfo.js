@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Modal, Pressable, Alert } from 'react-native'
 import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
+
 import { FontAwesome } from '@expo/vector-icons';
 import {
     SafeAreaView,
@@ -25,6 +27,8 @@ import { ScrollView, GestureHandlerRootView, TapGestureHandler } from 'react-nat
 
 import ModalImage from '../components/ModalImage';
 const BookInfo = ({ navigation, route }) => {
+    const user = useSelector(state => state.auth.user);  //useSelector is a hook to pick data from store
+    console.log(user);
     const [modalVisible, setModalVisible] = useState(false);
     const [imgModal, setImgModal] = useState(true);
     const likePng = require('./images/like (1).png');

@@ -3,7 +3,8 @@ import { View, Text, TextInput, Button, StyleSheet, ScrollView } from 'react-nat
 import { initializeApp } from '@firebase/app';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from '@firebase/auth';
 import axios from 'axios'; // Add axios for making HTTP requests
-
+import { clearUser, setUser } from '../redux/authSlice';
+import { useDispatch, useSelector } from 'react-redux';
 // Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyAVhbTLfMiEdvfv_tJbf9DN3DgxN8Pk3_k",
@@ -18,10 +19,10 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogin, handleAuthentication }) => {
+const AuthScreen = ({ email, setEmail, password, setPassword, isSignin, setIsSignin, handleAuthentication }) => {
     return (
         <View style={styles.authContainer}>
-            <Text style={styles.title}>{isLogin ? 'Sign In' : 'Sign Up'}</Text>
+            <Text style={styles.title}>{isSignin ? 'Sign In' : 'Sign Up'}</Text>
 
             <TextInput
                 style={styles.input}
@@ -38,12 +39,12 @@ const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogi
                 secureTextEntry
             />
             <View style={styles.buttonContainer}>
-                <Button title={isLogin ? 'Sign In' : 'Sign Up'} onPress={handleAuthentication} color="#3498db" />
+                <Button title={isSignin ? 'Sign In' : 'Sign Up'} onPress={handleAuthentication} color="#3498db" />
             </View>
 
             <View style={styles.bottomContainer}>
-                <Text style={styles.toggleText} onPress={() => setIsLogin(!isLogin)}>
-                    {isLogin ? 'Need an account? Sign Up' : 'Already have an account? Sign In'}
+                <Text style={styles.toggleText} onPress={() => setIsSignin(!isSignin)}>
+                    {isSignin ? 'Need an account? Sign Up' : 'Already have an account? Sign In'}
                 </Text>
             </View>
         </View>
@@ -51,33 +52,43 @@ const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogi
 }
 
 const UserRegister = ({ navigation }) => {
+    const dispatch = useDispatch();
+    const auth = getAuth(app);
+    const user = useSelector(state => state.auth.user);  //useSelector is a hook to pick data from store
+    const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [user, setUser] = useState(null); // Track user authentication state
-    const [isLogin, setIsLogin] = useState(true);
-
-    const auth = getAuth(app);
+    const [isSignin, setIsSignin] = useState(true);
     useEffect(() => {
+        console.log("Hello");
+        console.log(email);
         const unsubscribe = onAuthStateChanged(auth, (user) => {
-            setUser(user);
+            if (user) {
+                // Extract only necessary user data
+                const userData = {
+                    uid: user.uid,
+                    email: user.email,
+                    // Add other necessary fields as needed
+                };
+                dispatch(setUser(userData)); //Dispatch is used to call the actions
+            } else {
+                dispatch(clearUser());
+                setEmail('');
+                setPassword('');
+            }
         });
 
         return () => unsubscribe();
-    }, [auth]);
+    }, [auth, dispatch]);
 
-    const handleSignOut = async () => {
-        try {
-            await signOut(auth);
-            console.log('User logged out successfully!');
-            setUser(null); // Clear user state
-        } catch (error) {
-            console.error('Sign-out error:', error.message);
-        }
-    };
+
+
+
+
 
     const handleAuthentication = async () => {
         try {
-            if (isLogin) {
+            if (isSignin) {
                 // Sign in
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
                 const idToken = await userCredential.user.getIdToken(); // Get ID token
@@ -100,18 +111,18 @@ const UserRegister = ({ navigation }) => {
     return (
         <ScrollView contentContainerStyle={styles.container}>
             {user ? (
-                <View style={styles.authContainer}>
-                    <Text style={styles.emailText}>Welcome, {user.email}</Text>
-                    <Button title="Sign Out" onPress={handleSignOut} color="#e74c3c" />
-                </View>
+                console.log("User exists")
+
+
             ) : (
+
                 <AuthScreen
                     email={email}
                     setEmail={setEmail}
                     password={password}
                     setPassword={setPassword}
-                    isLogin={isLogin}
-                    setIsLogin={setIsLogin}
+                    isSignin={isSignin}
+                    setIsSignin={setIsSignin}
                     handleAuthentication={handleAuthentication}
                 />
             )}

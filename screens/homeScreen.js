@@ -5,17 +5,26 @@ import {
     StyleSheet,
     Text,
     View,
-    useWindowDimensions,
+    Button,
     Image,
     Animated,
+    Dimensions,
     ActivityIndicator // Import ActivityIndicator for loading state
 } from 'react-native';
+import LogOut from './LogOut';
+import { useDispatch } from 'react-redux';
+import { clearUser } from '../redux/authSlice';
 
-
+const { height: windowHeight, width: windowWidth } = Dimensions.get('window');
 function HomeScreen({ navigation }) {
+    console.log('useDispatch:', useDispatch);
 
-    const windowWidth = useWindowDimensions().width;
-    const windowHeight = useWindowDimensions().height;
+    const dispatch = useDispatch();
+    const handleLogOut = () => {
+        // Dispatch clearUser action to sign out user
+        dispatch(clearUser());
+        navigation.navigate("userRegister")
+    };
 
     // Create an animated value
     const translateY = useRef(new Animated.Value(windowHeight)).current;
@@ -35,7 +44,11 @@ function HomeScreen({ navigation }) {
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <View style={styles.img}>
-                <Image source={require('./images/man-reading-book-white-background-removebg-preview 1.png')} style={{ width: 350, height: 380, top: 76 }} />
+                <View style={{ alignItems: 'flex-end', width: windowWidth, marginTop: 50, position: 'absolute', paddingRight: 10 }}>
+                    <Button onPress={handleLogOut} title="LogOut"></Button>
+                </View>
+                <Image source={require('./images/man-reading-book-white-background-removebg-preview 1.png')} style={{ width: 350, height: 420, top: 76 }} />
+
             </View>
             <View style={styles.Container}>
                 <Animated.View style={[styles.design, {
@@ -80,7 +93,7 @@ const styles = StyleSheet.create({
     img: {
         alignItems: 'center',
         backgroundColor: '#D9D9D9',
-        height: 510,
+        height: windowHeight,
     },
     Container: {
         flex: 2,

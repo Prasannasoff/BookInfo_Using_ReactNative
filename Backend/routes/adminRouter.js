@@ -1,7 +1,7 @@
 const admin = require('firebase-admin');
 const express = require('express');
 const router = express.Router();
-
+const User = require('../Models/userModal');
 
 admin.initializeApp({
     credential: admin.credential.cert({
@@ -18,7 +18,14 @@ router.post('/authenticate', async (req, res) => {
     try {
         const decodedToken = await admin.auth().verifyIdToken(idToken);
         const uid = decodedToken.uid;
-        // Use uid to query user data or set user session
+        const email = decodedToken.email;
+
+        let user = await User.findOne({ uid })
+        if (!user) {
+            user = new User({ uid, email, favorites: [], PurchasedBooks: [] });
+            await user.save();
+        }
+
         res.status(200).send({ message: 'Authentication successful', uid });
     } catch (error) {
         res.status(401).send({ message: 'Authentication failed', error: error.message });
