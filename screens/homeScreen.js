@@ -11,19 +11,21 @@ import {
     Dimensions,
     ActivityIndicator // Import ActivityIndicator for loading state
 } from 'react-native';
-import LogOut from './LogOut';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { clearUser } from '../redux/authSlice';
 
 const { height: windowHeight, width: windowWidth } = Dimensions.get('window');
 function HomeScreen({ navigation }) {
     console.log('useDispatch:', useDispatch);
+    const user = useSelector(state => state.auth.user);  //useSelector is a hook to pick data from store
+
+    // console.log(user.uid)
 
     const dispatch = useDispatch();
     const handleLogOut = () => {
         // Dispatch clearUser action to sign out user
         dispatch(clearUser());
-        navigation.navigate("userRegister")
+        navigation.navigate("userAuthentication")
     };
 
     // Create an animated value

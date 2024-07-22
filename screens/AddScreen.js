@@ -11,7 +11,7 @@ export default function AddScreen() {
     const [image, setImage] = useState('');
     const [price, setPrice] = useState();
     const [overview, setOverview] = useState('');
-    const [category, setCategory] = useState();
+    const [category, setCategory] = useState('');
 
     const CategoryData = [
         { label: 'Autobiography', value: 'Autobiography' },

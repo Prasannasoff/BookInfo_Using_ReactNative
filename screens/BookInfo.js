@@ -28,7 +28,6 @@ import { ScrollView, GestureHandlerRootView, TapGestureHandler } from 'react-nat
 import ModalImage from '../components/ModalImage';
 const BookInfo = ({ navigation, route }) => {
     const user = useSelector(state => state.auth.user);  //useSelector is a hook to pick data from store
-    console.log(user);
     const [modalVisible, setModalVisible] = useState(false);
     const [imgModal, setImgModal] = useState(true);
     const likePng = require('./images/like (1).png');
@@ -36,7 +35,11 @@ const BookInfo = ({ navigation, route }) => {
     const AnimatedBackground = Animated.createAnimatedComponent(ImageBackground);
     const scale = useSharedValue(0);
 
+    const [userDetail, setUserDetail] = useState('');
 
+    useEffect(() => {
+        setUserDetail(user.uid);
+    }, []);
 
 
 
@@ -71,10 +74,20 @@ const BookInfo = ({ navigation, route }) => {
 
 
     }
-    const onDoubleTap = () => {
+    const onDoubleTap = async () => {
         scale.value = withSpring(1, undefined, () => {
             scale.value = 0
-        })
+        });
+        try {
+            console.log(userDetail)
+            const response = await axios.post('http://192.168.0.109:5000/api/bookDetails/favourites', { userDetail, data });
+            console.log(response.data);
+        }
+        catch (error) {
+            console.log(error);
+        }
+
+
     }
 
 

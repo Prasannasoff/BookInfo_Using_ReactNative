@@ -5,7 +5,11 @@ const userSchema = mongoose.Schema({
         unique: true
     },
     email: String,
-    favorites: [String],
+    favorites: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'bookModel'
+    }],
+
     PurchasedBooks: [String]
 })
 const userModel = mongoose.model("userDetails", userSchema);

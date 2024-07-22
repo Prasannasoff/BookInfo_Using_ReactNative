@@ -51,7 +51,7 @@ export default function ModalImage({ img, onClose }) {
     // });
 
     return (
-        <View style={{ flex1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'white' }}>
+        <View style={{ flex:1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'white' }}>
             {/* <PinchGestureHandler onGestureEvent={pinchHandler}> */}
             <View style={{ flex: 1 }}>
                 <Image source={{ uri: img }} style={[{ width: Wsize / 1.2, height: Hsize / 1.5 }]} resizeMode='contain' />
@@ -62,12 +62,12 @@ export default function ModalImage({ img, onClose }) {
     );
 }
 
-const styles = StyleSheet.create({
-    focalPoint: {
-        ...StyleSheet.absoluteFillObject,
-        width: 20,
-        height: 20,
-        backgroundColor: 'blue',
-        borderRadius: 10,
-    },
-});
+// const styles = StyleSheet.create({
+//     focalPoint: {
+//         ...StyleSheet.absoluteFillObject,
+//         width: 20,
+//         height: 20,
+//         backgroundColor: 'blue',
+//         borderRadius: 10,
+//     },
+// });

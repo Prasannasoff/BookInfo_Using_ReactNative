@@ -20,17 +20,39 @@ router.post('/authenticate', async (req, res) => {
         const uid = decodedToken.uid;
         const email = decodedToken.email;
 
-        let user = await User.findOne({ uid })
+        let user = await User.findOne({ uid });
         if (!user) {
-            user = new User({ uid, email, favorites: [], PurchasedBooks: [] });
-            await user.save();
+            return res.status(401).send({ message: 'User not found' });
         }
+
 
         res.status(200).send({ message: 'Authentication successful', uid });
     } catch (error) {
         res.status(401).send({ message: 'Authentication failed', error: error.message });
     }
 });
+router.post('/register', async (req, res) => {
+    const idToken = req.body.idToken;
+
+    try {
+        const decodedToken = await admin.auth().verifyIdToken(idToken);
+        const uid = decodedToken.uid;
+        const email = decodedToken.email;
+
+        let user = await User.findOne({ uid });
+        if (user) {
+            res.status(200).send({ message: "User already Exists" });
+        }
+        user = new User({ uid, email, favorites: [], PurchasedBooks: [] });
+        await user.save();
+
+
+        res.status(200).send({ message: 'Authentication successful', uid });
+    } catch (error) {
+        res.status(401).send({ message: 'Authentication failed', error: error.message });
+    }
+});
+
 
 
 module.exports = router;

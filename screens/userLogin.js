@@ -19,10 +19,10 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-const AuthScreen = ({ email, setEmail, password, setPassword, navigation, handleAuthentication }) => {
+const AuthScreen = ({ email, setEmail, password, navigation, setPassword, handleAuthentication }) => {
     return (
         <View style={styles.authContainer}>
-            <Text style={styles.title}> Sign Up</Text>
+            <Text style={styles.title}>Sign In</Text>
 
             <TextInput
                 style={styles.input}
@@ -39,26 +39,48 @@ const AuthScreen = ({ email, setEmail, password, setPassword, navigation, handle
                 secureTextEntry
             />
             <View style={styles.buttonContainer}>
-                <Button title='Sign Up' onPress={handleAuthentication} color="#3498db" />
+                <Button title='Sign In' onPress={handleAuthentication} color="#3498db" />
             </View>
 
             <View style={styles.bottomContainer}>
-                <Text style={styles.toggleText} onPress={() => navigation.navigate("UserLogin")}>
-                    Already have an account? Sign In
+                <Text style={styles.toggleText} onPress={() => navigation.navigate("UserRegister")}>
+                    Need an account? Sign Up
                 </Text>
             </View>
         </View>
     );
 }
 
-const UserRegister = ({ navigation }) => {
-
+const UserLogin = ({ navigation }) => {
+    const dispatch = useDispatch();
     const auth = getAuth(app);
-
+    const user = useSelector(state => state.auth.user);
+  
     const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
+    useEffect(() => {
+
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // Extract only necessary user data
+                const userData = {
+                    uid: user.uid,
+                    email: user.email,
+                    // Add other necessary fields as needed
+                };
+
+                dispatch(setUser(userData)); //Dispatch is used to call the actions
+            } else {
+                dispatch(clearUser());
+                setEmail('');
+                setPassword('');
+            }
+        });
+
+        return () => unsubscribe();
+    }, [auth, dispatch]);
 
 
 
@@ -67,16 +89,15 @@ const UserRegister = ({ navigation }) => {
 
     const handleAuthentication = async () => {
         try {
+            // Sign in
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const idToken = await userCredential.user.getIdToken(); // Get ID token
+            console.log('User signed in successfully!', idToken);
 
-            // Sign up
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            const idToken = await userCredential.user.getIdToken();
-            console.log('User created successfully!', idToken);
+            // Send ID token to your backend
+            await axios.post('http://192.168.0.109:5000/api/adminAuth/authenticate', { idToken });
 
-            // Send token to your backend for verification or user creation
-            await axios.post('http://192.168.0.109:5000/api/adminAuth/register', { idToken });
-
-            navigation.navigate("MainTabs");
+            navigation.navigate('MainTabs'); // Navigate to HomeScreen
 
         } catch (error) {
             console.error('Authentication error:', error.message);
@@ -85,16 +106,23 @@ const UserRegister = ({ navigation }) => {
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
+            {user ? (
+
+                navigation.navigate("MainTabs")
 
 
-            <AuthScreen
-                email={email}
-                setEmail={setEmail}
-                password={password}
-                setPassword={setPassword}
-                navigation={navigation}
-                handleAuthentication={handleAuthentication}
-            />
+
+            ) : (
+
+                <AuthScreen
+                    email={email}
+                    setEmail={setEmail}
+                    password={password}
+                    setPassword={setPassword}
+                    navigation={navigation}
+                    handleAuthentication={handleAuthentication}
+                />
+            )}
         </ScrollView>
     );
 }
@@ -145,4 +173,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default UserRegister;
+export default UserLogin;
