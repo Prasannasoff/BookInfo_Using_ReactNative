@@ -19,7 +19,7 @@ router.post("/favourites", async (req, res) => {
         console.log(userDetail)
         const userSelect = await userModal.findOne({ uid: userDetail });
 
-        const itemExist = userSelect.favorites.some(item => item === data._id)
+        const itemExist = userSelect.favorites.some(item => item.toString() === data._id.toString())
         console.log(itemExist)
         if (itemExist) {
             res.send("Already Added to Favorites");
@@ -40,12 +40,31 @@ router.get('/getFavourites', async (req, res) => {
 
         const user = await userModal.findOne({ uid: uid });
         const favoriteBookIds = user.favorites
-        console.log(user.favorites);
+
         const favoriteBooks = await bookModel.find({ _id: { $in: favoriteBookIds } });
         res.send(favoriteBooks);
     }
     catch (error) {
         res.status(401).send(error.message);
     }
+});
+router.delete('/deleteFavourites', async (req, res) => {
+    console.log("Hello");
+    try {
+        const { uid, bookId } = req.query;
+
+        console.log(bookId)
+        const user = await userModal.findOne({ uid: uid });
+        user.favorites = user.favorites.filter(fav => fav.toString() !== bookId);
+        await user.save();
+        res.send("Deleted Successfully");
+    }
+    catch (error) {
+        console.log(error);
+        res.send(error);
+    }
+
+
+
 })
 module.exports = router
