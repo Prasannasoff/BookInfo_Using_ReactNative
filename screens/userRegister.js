@@ -74,7 +74,7 @@ const UserRegister = ({ navigation }) => {
             console.log('User created successfully!', idToken);
 
             // Send token to your backend for verification or user creation
-            await axios.post('http://192.168.0.109:5000/api/adminAuth/register', { idToken });
+            await axios.post('http://192.168.0.105:5000/api/adminAuth/register', { idToken });
 
             navigation.navigate("MainTabs");
 

@@ -55,7 +55,7 @@ const UserLogin = ({ navigation }) => {
     const dispatch = useDispatch();
     const auth = getAuth(app);
     const user = useSelector(state => state.auth.user);
-  
+
     const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -95,7 +95,7 @@ const UserLogin = ({ navigation }) => {
             console.log('User signed in successfully!', idToken);
 
             // Send ID token to your backend
-            await axios.post('http://192.168.0.109:5000/api/adminAuth/authenticate', { idToken });
+            await axios.post('http://192.168.0.105:5000/api/adminAuth/authenticate', { idToken });
 
             navigation.navigate('MainTabs'); // Navigate to HomeScreen
 

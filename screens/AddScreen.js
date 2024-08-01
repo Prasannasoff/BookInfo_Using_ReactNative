@@ -12,6 +12,8 @@ export default function AddScreen() {
     const [price, setPrice] = useState();
     const [overview, setOverview] = useState('');
     const [category, setCategory] = useState('');
+    const [authorImage, setAuthorImage] = useState('');
+
 
     const CategoryData = [
         { label: 'Autobiography', value: 'Autobiography' },
@@ -25,6 +27,7 @@ export default function AddScreen() {
     const data = {
         bookName: bookName,
         author: author,
+        authorImage: authorImage,
         rating: rating,
         No_of_Purchased: No_of_Purchased,
         image: image,
@@ -36,8 +39,7 @@ export default function AddScreen() {
     const handleSubmit = async () => {
         console.log(category.value)
         try {
-            const response = await axios.post('http://192.168.0.109:5000/api/bookDetails/addBooks', data);
-
+            const response = await axios.post('http://192.168.0.105:5000/api/bookDetails/addBooks', data);
             console.log(response.data);
         }
         catch (error) {
@@ -63,6 +65,14 @@ export default function AddScreen() {
                     <View style={[styles.searchBar]}>
                         <TextInput
                             style={styles.input}
+                            value={image}
+                            onChangeText={setImage}
+                            placeholder='Book Image'
+                        />
+                    </View>
+                    <View style={[styles.searchBar]}>
+                        <TextInput
+                            style={styles.input}
                             value={author}
                             onChangeText={setAuthor}
                             placeholder='Name of the Author'
@@ -71,11 +81,12 @@ export default function AddScreen() {
                     <View style={[styles.searchBar]}>
                         <TextInput
                             style={styles.input}
-                            value={image}
-                            onChangeText={setImage}
-                            placeholder='Image'
+                            value={authorImage}
+                            onChangeText={setAuthorImage}
+                            placeholder='AuthorImage'
                         />
                     </View>
+
                     <View style={[styles.searchBar]}>
                         <TextInput
                             style={styles.input}

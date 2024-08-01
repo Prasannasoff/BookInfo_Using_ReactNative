@@ -46,7 +46,7 @@ function RenderItem({ item, index, x, navigation }) {
 
                 </View>
                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                    <TouchableOpacity style={[styles.buttonFrame]} onPress={() => navigation.navigate("BookList")}>
+                    <TouchableOpacity style={[styles.buttonFrame]} onPress={() => navigation.navigate("BookListScreen", { category: item.category })}>
                         <Text style={{ fontFamily: 'Poppins' }}>Select Category</Text>
                     </TouchableOpacity>
                 </View>
@@ -83,11 +83,11 @@ const styles = StyleSheet.create({
     },
     CircleAnimation: {
         position: 'absolute',
-        top:10,
+        top: 10,
         width: WSIZE / 1.7,
         height: HSIZE / 4,
-        borderRadius:200,
-       
+        borderRadius: 200,
+
 
 
     },

@@ -23,9 +23,9 @@ const Tab = createBottomTabNavigator();
 
 const BookStackNavigator = () => {
   return (
-    <Stack.Navigator>
-
-      <Stack.Screen name="BookListScreen" component={BookList} options={{ headerShown: false }} />
+    <Stack.Navigator initialRouteName='Carousal'>
+      <Stack.Screen name="Carousal" component={Carousel} options={{ headerShown: false }} />
+      <Stack.Screen name="BookListScreen" component={BookList} />
       <Stack.Screen name="BookInfo" component={BookInfo} />
     </Stack.Navigator>
   );
@@ -62,8 +62,7 @@ const MainTabNavigator = () => {
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
-      <Tab.Screen name="BookList" component={BookStackNavigator} options={{ headerShown: false }} />
-      <Tab.Screen name="Carousal" component={Carousel} options={{ headerShown: false }} />
+      <Tab.Screen name="BookTabs" component={BookStackNavigator} options={{ headerShown: false }} />
       <Tab.Screen name="AddScreen" component={AddScreen} options={{ headerShown: false }} />
       <Tab.Screen name="FavouriteScreen" component={FavouriteScreen} options={{ headerShown: false }} />
 

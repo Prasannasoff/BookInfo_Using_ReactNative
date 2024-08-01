@@ -80,7 +80,7 @@ const BookInfo = ({ navigation, route }) => {
         });
         try {
             console.log(userDetail)
-            const response = await axios.post('http://192.168.0.109:5000/api/bookDetails/favourites', { userDetail, data });
+            const response = await axios.post('http://192.168.0.105:5000/api/bookDetails/favourites', { userDetail, data });
             console.log(response.data);
         }
         catch (error) {

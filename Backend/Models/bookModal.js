@@ -9,6 +9,9 @@ const bookSchema = mongoose.Schema({
         type: String,
         required: true,
     },
+    authorImage:{
+        type:String,
+    },
     price: {
         type: Number,
         required: true,

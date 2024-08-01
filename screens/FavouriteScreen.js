@@ -15,7 +15,7 @@ function FavouriteScreen() {
 
             const uid = user.uid;
             try {
-                const getFavourites = await axios.get("http://192.168.0.109:5000/api/bookDetails/getFavourites", { params: { uid } });
+                const getFavourites = await axios.get("http://192.168.0.105:5000/api/bookDetails/getFavourites", { params: { uid } });
                 setData(getFavourites.data);
 
             }
@@ -69,7 +69,7 @@ const DragableCards = ({ item, UpdateList }) => {
     const handleDelete = async () => {
         try {
             console.log("Deleting favourite:", uid, bookId);
-            const response = await axios.delete("http://192.168.0.109:5000/api/bookDetails/deleteFavourites", { params: { uid, bookId } });
+            const response = await axios.delete("http://192.168.0.105:5000/api/bookDetails/deleteFavourites", { params: { uid, bookId } });
             console.log(response.data);
             runOnJS(UpdateList)(bookId)//UpdateList function is called here
         } catch (error) {
@@ -119,8 +119,8 @@ const DragableCards = ({ item, UpdateList }) => {
                         <Animated.View style={{ flex: 1, flexDirection: 'column' }}>
                             <AnimatedText style={{ fontFamily: 'Poppins', fontSize: 15 }}>{item.bookName}</AnimatedText>
                             <AnimatedText style={{ fontSize: 12 }}>{item.author}</AnimatedText>
-                            <Animated.View style={{justifyContent:'flex-end',alignItems:'flex-end',marginTop:5}}>
-                                <Button title='Delete' onPress={handleDelete} color='red'/>
+                            <Animated.View style={{ justifyContent: 'flex-end', alignItems: 'flex-end', marginTop: 5 }}>
+                                <Button title='Delete' onPress={handleDelete} color='red' />
                             </Animated.View>
                         </Animated.View>
                     </Animated.View>

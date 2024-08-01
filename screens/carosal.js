@@ -40,22 +40,7 @@ const index=useSharedValue(0);
       x.value = event.contentOffset.x;
     },
   });
-  // const handleOnScroll = event => {
-  //   Animated.event( // It allows you to map native events (such as scroll, gesture, and pan events) directly to animated values. This is particularly useful when you need to drive animations based on user interactions or other dynamic events. 
-  //     [
-  //       {
-  //         nativeEvent: {
-  //           contentOffset: { //contentOffset refers to the current scroll position of the list.
-  //             x: scrollX,
-  //           },
-  //         },
-  //       },
-  //     ],
-  //     {
-  //       useNativeDriver: false,
-  //     },
-  //   )(event);
-  // };
+
 
   const onViewableItemsChanged = ({ viewableItems }) => {
     if (viewableItems[0]?.index !== null) {

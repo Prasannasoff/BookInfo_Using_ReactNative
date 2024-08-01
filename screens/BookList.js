@@ -11,21 +11,25 @@ import {
     Image,
     KeyboardAvoidingView
 } from 'react-native';
+
 import { TouchableOpacity, GestureHandlerRootView } from 'react-native-gesture-handler';
 
-function BookList({ navigation }) {
+function BookList({ navigation, route }) {
     const [bookData, setBookData] = useState([]);
     const [dupBook, setDupBook] = useState([]);
     const [name, setName] = useState('');
     const [popularBooks, setPopularBook] = useState([]);
 
+
+    const category = route.params?.category || '';
+    console.log(category)
     useEffect(() => {
         const getData = async () => {
             try {
                 // const response = await axios.get(
                 //     'https://www.googleapis.com/books/v1/volumes?q=subject:fiction&maxResults=40'
                 // );
-                const response = await axios.get('http://192.168.0.109:5000/api/bookDetails/getAllBooks');
+                const response = await axios.get('http://192.168.0.105:5000/api/bookDetails/getAllBooks');
                 const books = response.data;
                 // const sortedBooks = books
                 //     .filter((book) => book.volumeInfo.averageRating && book.volumeInfo.ratingsCount)
@@ -52,8 +56,10 @@ function BookList({ navigation }) {
                 // }));
 
                 setBookData(books);
-                setPopularBook(books);
 
+                setPopularBook(books);
+                const filteredCategory = books.filter(book => book.category.toLowerCase() === category.toLowerCase());
+                setBookData(filteredCategory);
                 setDupBook(books);
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -61,7 +67,7 @@ function BookList({ navigation }) {
 
         };
         getData();
-    }, []);
+    }, [category]);
 
 
     const filterBySearch = (text) => {
@@ -95,6 +101,8 @@ function BookList({ navigation }) {
                             <Image source={{ uri: item.image }} style={[styles.bookimg]} />
                         </View>
                         <Text style={{ fontFamily: 'Poppins', fontSize: 10 }}>{item.bookName}</Text>
+                        <Text style={{ fontFamily: 'Poppins', fontSize: 10 }}>{item.category}</Text>
+
 
 
                     </View>
@@ -111,7 +119,7 @@ function BookList({ navigation }) {
                 <View style={[styles.box1]}>
                     <View style={[styles.box2]}>
                         <View style={styles.Avatar}>
-                            {/* <Image source={{ uri: item.authorImage }} style={{ width: 70, height: 70, borderRadius: 100 }} /> */}
+                            <Image source={{ uri: item.authorImage }} style={{ width: 70, height: 70, borderRadius: 100 }} />
                             <Text style={{ fontFamily: "Poppins", fontSize: 13 }}>{item.author}</Text>
 
                         </View>
@@ -181,7 +189,7 @@ const styles = StyleSheet.create({
     },
     searchBar: {
         backgroundColor: 'rgba(232,234,233,0.6)',
-        marginTop: 90,
+        marginTop: 10,
         height: 50,
         flexDirection: 'row',
         alignItems: 'center',
@@ -253,11 +261,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         alignContent: 'center',
         justifyContent: 'center',
-        elevation: 1,
-        width: 100,
-        height: 70,
-        backgroundColor: '#ccffff',
-        borderRadius: 10,
+    
+        height: 120,
+        
         padding: 10,
     },
     box1: {

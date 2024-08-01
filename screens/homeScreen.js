@@ -72,7 +72,7 @@ function HomeScreen({ navigation }) {
                         </View>
                     </View>
                     <View style={{ marginTop: 50, width: 320 }}>
-                        <TouchableOpacity style={styles.Homebtn} onPress={() => navigation.navigate("BookList")}>
+                        <TouchableOpacity style={styles.Homebtn} onPress={() => navigation.navigate("BookTabs")}>
                             <Text style={{ fontSize: 17, color: 'white', fontWeight: '500', fontFamily: 'Poppins' }}>
                                 Get Started
                             </Text>
