@@ -61,33 +61,31 @@ const UserLogin = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
-
-    useEffect(() => {
-
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            console.log("Hello")
-            if (user) {
-                // Extract only necessary user data
-                console.log(user);
-                const userData = {
-                    uid: user.uid,
-                    email: user.email,
-                    // Add other necessary fields as needed
-                };
-
-                dispatch(setUser(userData)); //Dispatch is used to call the actions
+    // const [changeState, setChangeState] = useState(false);
+    // useEffect(() => {
 
 
-            } else {
-                
-                setEmail('');
-                setPassword('');
-            }
-            setLoading(false);
-        });
+    //     if (user) {
+    //         // Extract only necessary user data
+    //         console.log(user);
+    //         const userData = {
+    //             uid: user.uid,
+    //             email: user.email,
+    //             // Add other necessary fields as needed
+    //         };
 
-        return () => unsubscribe();
-    }, [auth, dispatch]);
+    //         dispatch(setUser(userData)); //Dispatch is used to call the actions
+
+
+    //     } else {
+
+    //         setEmail('');
+    //         setPassword('');
+    //     }
+    //     setLoading(false);
+
+
+    // }, [auth, dispatch, changeState]);
 
 
     useEffect(() => {
@@ -96,9 +94,7 @@ const UserLogin = ({ navigation }) => {
                 navigation.navigate("MainTabs");
             } else {
                 // Ensure user is redirected to authentication screen if not logged in
-                if (user) {
-                    console.log(user.uid);
-                }
+            
 
                 navigation.navigate("userAuthentication");
             }
@@ -118,6 +114,15 @@ const UserLogin = ({ navigation }) => {
             const userCredential = await signInWithEmailAndPassword(auth, email, password); //This triggers the unsubscribe since auth state changes
             const idToken = await userCredential.user.getIdToken(); // Get ID token
             console.log('User signed in successfully!', idToken);
+            const userData = {
+                uid: userCredential.user.uid,
+                email: userCredential.user.email,
+            };
+
+            // Dispatch user data to Redux store
+            dispatch(setUser(userData));
+
+            // setChangeState(true);
 
             // Send ID token to your backend
             const response = await axios.post('http://192.168.0.106:5000/api/adminAuth/authenticate', { idToken });
