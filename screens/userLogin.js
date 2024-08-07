@@ -56,15 +56,19 @@ const UserLogin = ({ navigation }) => {
     const auth = getAuth(app);
     const user = useSelector(state => state.auth.user);
 
+
     const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
 
         const unsubscribe = onAuthStateChanged(auth, (user) => {
+            console.log("Hello")
             if (user) {
                 // Extract only necessary user data
+                console.log(user);
                 const userData = {
                     uid: user.uid,
                     email: user.email,
@@ -72,57 +76,85 @@ const UserLogin = ({ navigation }) => {
                 };
 
                 dispatch(setUser(userData)); //Dispatch is used to call the actions
+
+
             } else {
-                dispatch(clearUser());
+                
                 setEmail('');
                 setPassword('');
             }
+            setLoading(false);
         });
 
         return () => unsubscribe();
     }, [auth, dispatch]);
 
 
+    useEffect(() => {
+        if (!loading) {
+            if (user) {
+                navigation.navigate("MainTabs");
+            } else {
+                // Ensure user is redirected to authentication screen if not logged in
+                if (user) {
+                    console.log(user.uid);
+                }
 
+                navigation.navigate("userAuthentication");
+            }
+        }
+    }, [user, loading, navigation]);
 
-
+    useEffect(() => {
+        console.log("User state:", user);
+        console.log("Loading state:", loading);
+    }, [user, loading]);
 
     const handleAuthentication = async () => {
+        setLoading(true);
         try {
             // Sign in
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+
+            const userCredential = await signInWithEmailAndPassword(auth, email, password); //This triggers the unsubscribe since auth state changes
             const idToken = await userCredential.user.getIdToken(); // Get ID token
             console.log('User signed in successfully!', idToken);
 
             // Send ID token to your backend
-            await axios.post('http://192.168.0.105:5000/api/adminAuth/authenticate', { idToken });
+            const response = await axios.post('http://192.168.0.106:5000/api/adminAuth/authenticate', { idToken });
 
-            navigation.navigate('MainTabs'); // Navigate to HomeScreen
 
         } catch (error) {
             console.error('Authentication error:', error.message);
         }
+        finally {
+            setLoading(false);
+        }
+
+
     };
+    if (loading) {
+        return <Text>Loading...</Text>
+    }
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
-            {user ? (
+            {user ?
 
-                navigation.navigate("MainTabs")
+                null
 
 
 
-            ) : (
+                : (
 
-                <AuthScreen
-                    email={email}
-                    setEmail={setEmail}
-                    password={password}
-                    setPassword={setPassword}
-                    navigation={navigation}
-                    handleAuthentication={handleAuthentication}
-                />
-            )}
+                    <AuthScreen
+                        email={email}
+                        setEmail={setEmail}
+                        password={password}
+                        setPassword={setPassword}
+                        navigation={navigation}
+                        handleAuthentication={handleAuthentication}
+                    />
+                )}
         </ScrollView>
     );
 }

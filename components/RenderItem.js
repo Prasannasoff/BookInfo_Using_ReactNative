@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
 
     },
     imageFrame: {
-        width: WSIZE / 1.3,
+        width: WSIZE ,
         height: HSIZE / 1.8,
         borderRadius: 20,
         overflow: 'hidden',

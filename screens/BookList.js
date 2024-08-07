@@ -11,10 +11,12 @@ import {
     Image,
     KeyboardAvoidingView
 } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { TouchableOpacity, GestureHandlerRootView } from 'react-native-gesture-handler';
 
 function BookList({ navigation, route }) {
+    const user = useSelector(state => state.auth.user);
     const [bookData, setBookData] = useState([]);
     const [dupBook, setDupBook] = useState([]);
     const [name, setName] = useState('');
@@ -25,11 +27,13 @@ function BookList({ navigation, route }) {
     console.log(category)
     useEffect(() => {
         const getData = async () => {
+
+            console.log(user.uid)
             try {
                 // const response = await axios.get(
                 //     'https://www.googleapis.com/books/v1/volumes?q=subject:fiction&maxResults=40'
                 // );
-                const response = await axios.get('http://192.168.0.105:5000/api/bookDetails/getAllBooks');
+                const response = await axios.get('http://192.168.0.106:5000/api/bookDetails/getAllBooks');
                 const books = response.data;
                 // const sortedBooks = books
                 //     .filter((book) => book.volumeInfo.averageRating && book.volumeInfo.ratingsCount)
@@ -54,12 +58,16 @@ function BookList({ navigation, route }) {
 
 
                 // }));
+                if (category === "All") {
+                    setBookData(books);
 
-                setBookData(books);
+                    setPopularBook(books);
+                }
+                else {
 
-                setPopularBook(books);
-                const filteredCategory = books.filter(book => book.category.toLowerCase() === category.toLowerCase());
-                setBookData(filteredCategory);
+                    const filteredCategory = books.filter(book => book.category.toLowerCase() === category.toLowerCase());
+                    setBookData(filteredCategory);
+                }
                 setDupBook(books);
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -261,9 +269,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         alignContent: 'center',
         justifyContent: 'center',
-    
+
         height: 120,
-        
+
         padding: 10,
     },
     box1: {

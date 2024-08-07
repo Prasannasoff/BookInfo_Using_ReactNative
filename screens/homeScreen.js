@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearUser } from '../redux/authSlice';
+import { CommonActions } from '@react-navigation/native';
 
 const { height: windowHeight, width: windowWidth } = Dimensions.get('window');
 function HomeScreen({ navigation }) {
@@ -22,10 +23,20 @@ function HomeScreen({ navigation }) {
     // console.log(user.uid)
 
     const dispatch = useDispatch();
-    const handleLogOut = () => {
-        // Dispatch clearUser action to sign out user
-        dispatch(clearUser());
-        navigation.navigate("userAuthentication")
+    const [loading, setLoading] = useState(false);
+
+    const handleLogOut = async () => {
+        setLoading(true);
+        try {
+            await dispatch(clearUser());
+            setTimeout(() => {
+                navigation.navigate("userAuthentication")
+            }, 0);
+        } catch (error) {
+            console.error("Logout error:", error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     // Create an animated value
@@ -45,13 +56,15 @@ function HomeScreen({ navigation }) {
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            <View style={styles.img}>
-                <View style={{ alignItems: 'flex-end', width: windowWidth, marginTop: 50, position: 'absolute', paddingRight: 10 }}>
-                    <Button onPress={handleLogOut} title="LogOut"></Button>
-                </View>
-                <Image source={require('./images/man-reading-book-white-background-removebg-preview 1.png')} style={{ width: 350, height: 420, top: 76 }} />
+            {loading ? <ActivityIndicator size="large" color="#0000ff" /> :
+                <View style={styles.img}>
+                    <View style={{ alignItems: 'flex-end', width: windowWidth, marginTop: 50, position: 'absolute', paddingRight: 10 }}>
+                        <Button onPress={handleLogOut} title="LogOut"></Button>
+                    </View>
+                    <Image source={require('./images/man-reading-book-white-background-removebg-preview 1.png')} style={{ width: 350, height: 420, top: 76 }} />
 
-            </View>
+                </View>
+            }
             <View style={styles.Container}>
                 <Animated.View style={[styles.design, {
                     height: windowHeight > 500 ? 340 : 500,

@@ -8,33 +8,40 @@ const { width: WSIZE, height: HSIZE } = Dimensions.get('window')
 
 const CategoryData = [
   {
+    id: 0,
+    category: "All",
+    image: require('./images/All_Books-removebg.png'),
+    backgroundColor: 'white'
+
+  },
+  {
     id: 1,
     category: "AutoBiography",
-    image: require('./images/autobiography.jpg'),
+    image: require('./images/biographyImage-removebg-preview.png'),
     backgroundColor: '#ffa3ce',
   },
   {
     id: 2,
     category: "Thriller",
-    image: require('./images/GHOST CATEGORY.jpg'),
+    image: require('./images/Horror-removebg-preview.png'),
     backgroundColor: '#bae4fd',
   },
   {
     id: 3,
     category: "Comics",
-    image: require('./images/Comics.jpg'),
+    image: require('./images/ComicBook-removebg-preview.png'),
     backgroundColor: '#faeb8a',
 
   }
 ];
 const { width } = Dimensions.get('window');
 
-const Carousel = ({navigation}) => {
+const Carousel = ({ navigation }) => {
 
   const flatListIndex = useSharedValue(0);
 
   const x = useSharedValue(0); // first animated.Value for Scroll X is 0 then when user swipe, the scrollX value also moves since we are updating in Animated event
-const index=useSharedValue(0);
+  const index = useSharedValue(0);
   const onScroll = useAnimatedScrollHandler({
     onScroll: event => {
       x.value = event.contentOffset.x;
