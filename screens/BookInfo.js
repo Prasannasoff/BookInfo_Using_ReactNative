@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Modal, Pressable, Alert } from 'react-native'
+import { Modal, Pressable, Alert, TouchableOpacity } from 'react-native'
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
+import { Dropdown } from 'react-native-element-dropdown';
 
 import { FontAwesome } from '@expo/vector-icons';
 import {
@@ -27,6 +28,15 @@ import { ScrollView, GestureHandlerRootView, TapGestureHandler } from 'react-nat
 
 import ModalImage from '../components/ModalImage';
 const BookInfo = ({ navigation, route }) => {
+    const RatingData = [
+        { label: '1', value: '1' },
+        { label: '2', value: '2' },
+        { label: '3', value: '3' },
+        { label: '4', value: '4' },
+        { label: '5', value: '5' },
+
+    ];
+    const [dropdown, setDropDown] = useState(false);
     const user = useSelector(state => state.auth.user);  //useSelector is a hook to pick data from store
     const [modalVisible, setModalVisible] = useState(false);
     const [imgModal, setImgModal] = useState(true);
@@ -90,7 +100,11 @@ const BookInfo = ({ navigation, route }) => {
 
     }
 
+    const handleRating = () => {
+        setDropDown(!dropdown); // Toggle dropdown visibility
 
+
+    }
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
             <SafeAreaView>
@@ -129,20 +143,36 @@ const BookInfo = ({ navigation, route }) => {
                         <View style={[styles.bookDetails]}>
                             <Text style={{ fontFamily: 'Poppins', fontSize: 35 }}>{data.bookName}</Text>
                             <View style={[styles.Rating]}>
-                                <FontAwesome name='star' size={15} color='#D4A056' style={{}} />
-                                <Text style={{ fontFamily: 'Poppins', fontSize: 12 }}>{data.rating}/5</Text>
-                                <Text style={{ fontFamily: 'Poppins', fontSize: 12, color: 'grey' }}>No.of purchased{data.No_of_Purchased}</Text>
-                            </View>
-                            <View style={[styles.desc]}>
-                                <Text style={{ fontFamily: 'Poppins', fontSize: 20 }}>Description</Text>
-                                <Text style={{ fontFamily: 'Poppins', fontSize: 12, color: 'grey', marginLeft: 23 }}>{data.overview}</Text>
+                                <TouchableOpacity onPress={handleRating}>
+                                    <FontAwesome name='star' size={15} color='#D4A056' style={{}} />
+                                </TouchableOpacity>
+                                {dropdown && <View style={[styles.dropdown]}>
+                                    {RatingData.map((item) => (
+                                        <TouchableOpacity key={item.value} style={styles.dropdownItem} onPress={() => {
+                                            console.log(item.value); // Handle the selected rating
+                                            setDropDown(false); // Hide dropdown after selection
+                                        }}>
+                                            <Text style={{ fontSize: 20 }}>{item.label}</Text>
+                                        </TouchableOpacity>
+                                    ))}
+                                
 
-                            </View>
+                                    
+
+                                    </View>}
+                            <Text style={{ fontFamily: 'Poppins', fontSize: 12 }}>{data.rating}/5</Text>
+                            <Text style={{ fontFamily: 'Poppins', fontSize: 12, color: 'grey' }}>No.of purchased{data.No_of_Purchased}</Text>
                         </View>
-                    </Animated.View>
-                </ScrollView>
-            </SafeAreaView>
-        </GestureHandlerRootView>
+                        <View style={[styles.desc]}>
+                            <Text style={{ fontFamily: 'Poppins', fontSize: 20 }}>Description</Text>
+                            <Text style={{ fontFamily: 'Poppins', fontSize: 12, color: 'grey', marginLeft: 23 }}>{data.overview}</Text>
+
+                        </View>
+                    </View>
+                </Animated.View>
+            </ScrollView>
+        </SafeAreaView>
+        </GestureHandlerRootView >
     );
 };
 
@@ -166,6 +196,31 @@ const styles = StyleSheet.create({
 
 
 
+    },
+    dropdown: {
+        marginLeft: 20,
+        top: 20,
+        
+
+        justifyContent: 'center',
+        flex: 1,
+        zIndex: 5,
+        backgroundColor: 'white',
+        flexDirection: 'column',
+        backgroundColor: 'white',
+        position: 'absolute',
+       
+        width: 120,
+        gap:2
+
+    },
+    dropdownItem:{
+        
+        paddingLeft: 15,
+        borderBottomWidth: 1/4,
+        borderBottomColor: 'grey', 
+        
+        
     },
     bookDetails: {
         paddingLeft: 30,
