@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Modal, Pressable, Alert, TouchableOpacity } from 'react-native'
+import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { Modal, Pressable, Alert, TouchableOpacity, Dimensions } from 'react-native'
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { Dropdown } from 'react-native-element-dropdown';
@@ -16,17 +16,23 @@ import {
     ImageBackground,
 
 } from 'react-native';
+
 import Animated, {
     useSharedValue,
     useAnimatedStyle,
     withTiming,
     withSpring,
-    withRepeat
+    withRepeat,
+    runOnJS,
+    useAnimatedGestureHandler
 
 } from 'react-native-reanimated'
-import { ScrollView, GestureHandlerRootView, TapGestureHandler } from 'react-native-gesture-handler';
-
+import { ScrollView, GestureHandlerRootView, TapGestureHandler, PanGestureHandler } from 'react-native-gesture-handler';
+const { width } = Dimensions.get('window')
+const counterWidth = width / 4;
 import ModalImage from '../components/ModalImage';
+
+
 const BookInfo = ({ navigation, route }) => {
     const RatingData = [
         { label: '1', value: '1' },
@@ -36,6 +42,8 @@ const BookInfo = ({ navigation, route }) => {
         { label: '5', value: '5' },
 
     ];
+    const [counter, setCounter] = useState(0);
+    const counterUpdatedRef = useRef(false); // Use useRef to track if the counter has been updated
     const [dropdown, setDropDown] = useState(false);
     const user = useSelector(state => state.auth.user);  //useSelector is a hook to pick data from store
     const [modalVisible, setModalVisible] = useState(false);
@@ -105,6 +113,57 @@ const BookInfo = ({ navigation, route }) => {
 
 
     }
+    //If you have a component that re-renders frequently, re-creating functions can lead to unnecessary memory usage and slight performance degradation.
+    // /Using useCallback ensures that the incrementCount and decrementCount functions are only re-created when their dependencies change. If we failed to give when useState rerenders new function will be created again and again
+    const incrementCount = useCallback(() => {
+
+        setCounter((currentCount) => currentCount + 1);
+    }, []);
+
+    const decrementCount = useCallback(() => {
+        setCounter((currentCount) => currentCount - 1);
+    }, []);
+
+    const MAX_SLIDE_OFFSET = counterWidth * 0.3;
+    const dragX = useSharedValue(0);
+    const handleGesture = useAnimatedGestureHandler({
+
+        onActive: (e) => {
+            dragX.value = e.translationX,
+                //If e.translationX is greater than -MAX_SLIDE_OFFSET, it returns e.translationX. If e.translationX is less than -MAX_SLIDE_OFFSET, it returns -MAX_SLIDE_OFFSET. This effectively sets the minimum value of dragX.value to -MAX_SLIDE_OFFSET.
+                dragX.value = Math.min(Math.max(
+                    e.translationX,
+                    -MAX_SLIDE_OFFSET,
+
+                ), MAX_SLIDE_OFFSET);
+
+
+
+        },
+        onEnd: (e) => {
+            dragX.value = withTiming(0);
+            if (dragX.value === MAX_SLIDE_OFFSET) {
+                // Increment
+                runOnJS(incrementCount)();
+            } else if (dragX.value === -MAX_SLIDE_OFFSET) {
+                // Decrement
+                runOnJS(decrementCount)();
+            }
+        }
+    });
+
+    const dragContainer = useAnimatedStyle(() => {
+        return {
+            transform: [
+                {
+                    translateX: dragX.value
+                }
+            ]
+        }
+    }
+    )
+    const AnimatedText = Animated.createAnimatedComponent(Text);
+
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
             <SafeAreaView>
@@ -155,23 +214,40 @@ const BookInfo = ({ navigation, route }) => {
                                             <Text style={{ fontSize: 20 }}>{item.label}</Text>
                                         </TouchableOpacity>
                                     ))}
-                                
 
-                                    
 
-                                    </View>}
-                            <Text style={{ fontFamily: 'Poppins', fontSize: 12 }}>{data.rating}/5</Text>
-                            <Text style={{ fontFamily: 'Poppins', fontSize: 12, color: 'grey' }}>No.of purchased{data.No_of_Purchased}</Text>
+
+
+                                </View>}
+                                <Text style={{ fontFamily: 'Poppins', fontSize: 12 }}>{data.rating}/5</Text>
+                                <Text style={{ fontFamily: 'Poppins', fontSize: 12, color: 'grey' }}>No.of purchased{data.No_of_Purchased}</Text>
+                            </View>
+                            <View style={[styles.desc]}>
+                                <Text style={{ fontFamily: 'Poppins', fontSize: 20 }}>Description</Text>
+                                <Text style={{ fontFamily: 'Poppins', fontSize: 12, color: 'grey', marginLeft: 23 }}>{data.overview}</Text>
+
+                            </View>
+                            <View style={[styles.CounterCont]}>
+                                <PanGestureHandler onGestureEvent={handleGesture}>
+                                    <Animated.View style={[styles.Counter]}>
+                                        <FontAwesome name='minus' size={15} color='white' style={{}} />
+
+                                        <Animated.View style={[styles.countDesign, dragContainer]}>
+                                            <AnimatedText>{counter}</AnimatedText>
+                                        </Animated.View>
+
+                                        <FontAwesome name='plus' size={15} color='white' style={{}} />
+
+
+
+
+                                    </Animated.View>
+                                </PanGestureHandler>
+                            </View>
                         </View>
-                        <View style={[styles.desc]}>
-                            <Text style={{ fontFamily: 'Poppins', fontSize: 20 }}>Description</Text>
-                            <Text style={{ fontFamily: 'Poppins', fontSize: 12, color: 'grey', marginLeft: 23 }}>{data.overview}</Text>
-
-                        </View>
-                    </View>
-                </Animated.View>
-            </ScrollView>
-        </SafeAreaView>
+                    </Animated.View>
+                </ScrollView>
+            </SafeAreaView>
         </GestureHandlerRootView >
     );
 };
@@ -200,7 +276,7 @@ const styles = StyleSheet.create({
     dropdown: {
         marginLeft: 20,
         top: 20,
-        
+
 
         justifyContent: 'center',
         flex: 1,
@@ -209,18 +285,18 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         backgroundColor: 'white',
         position: 'absolute',
-       
+
         width: 120,
-        gap:2
+        gap: 2
 
     },
-    dropdownItem:{
-        
+    dropdownItem: {
+
         paddingLeft: 15,
-        borderBottomWidth: 1/4,
-        borderBottomColor: 'grey', 
-        
-        
+        borderBottomWidth: 1 / 4,
+        borderBottomColor: 'grey',
+
+
     },
     bookDetails: {
         paddingLeft: 30,
@@ -245,6 +321,27 @@ const styles = StyleSheet.create({
         height: 40
 
     },
+    CounterCont: {
+        flex: 1,
+        alignItems: 'flex-end',
+
+    },
+    Counter: {
+        width: counterWidth,
+        padding: 10,
+        borderRadius: 15,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        backgroundColor: 'black'
+    },
+    countDesign: {
+        zIndex: 10,
+        borderRadius: 300,
+        width: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'grey'
+    }
 
 
 })
