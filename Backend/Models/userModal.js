@@ -10,7 +10,29 @@ const userSchema = mongoose.Schema({
         ref: 'bookModel'
     }],
 
-    PurchasedBooks: [String]
+    PurchasedBooks: [
+        {
+            bookId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'bookModel'
+            },
+
+            userRating: {
+                type: Number,
+                default: null
+            },
+            Review: {
+                type: String,
+                default: null
+            },
+            bookCount:{
+                type:Number
+            },
+            amountPaid:{
+                type:Number
+            }
+        }
+    ]
 })
 const userModel = mongoose.model("userDetails", userSchema);
 module.exports = userModel;

@@ -28,16 +28,21 @@ function HomeScreen({ navigation }) {
     const handleLogOut = async () => {
         setLoading(true);
         try {
-            await dispatch(clearUser());
-            setTimeout(() => {
-                navigation.navigate("userAuthentication")
-            }, 0);
+            // Check if the user is logged in before trying to clear
+            if (user) {
+                await dispatch(clearUser());
+                navigation.navigate("userAuthentication");
+            } else {
+                console.log("User is not logged in");
+                navigation.navigate("userAuthentication");
+            }
         } catch (error) {
             console.error("Logout error:", error);
         } finally {
             setLoading(false);
         }
     };
+
 
     // Create an animated value
     const translateY = useRef(new Animated.Value(windowHeight)).current;

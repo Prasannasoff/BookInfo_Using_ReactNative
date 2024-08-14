@@ -94,7 +94,7 @@ const UserLogin = ({ navigation }) => {
                 navigation.navigate("MainTabs");
             } else {
                 // Ensure user is redirected to authentication screen if not logged in
-            
+
 
                 navigation.navigate("userAuthentication");
             }
@@ -102,7 +102,7 @@ const UserLogin = ({ navigation }) => {
     }, [user, loading, navigation]);
 
     useEffect(() => {
-        console.log("User state:", user);
+        // console.log("User state:", user);
         console.log("Loading state:", loading);
     }, [user, loading]);
 

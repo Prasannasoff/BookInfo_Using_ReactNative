@@ -27,9 +27,10 @@ import Animated, {
     useAnimatedGestureHandler
 
 } from 'react-native-reanimated'
+import BuyNowModal from '../components/BuyNowModal';
 import { ScrollView, GestureHandlerRootView, TapGestureHandler, PanGestureHandler } from 'react-native-gesture-handler';
 const { width } = Dimensions.get('window')
-const counterWidth = width / 4;
+
 import ModalImage from '../components/ModalImage';
 
 
@@ -47,6 +48,7 @@ const BookInfo = ({ navigation, route }) => {
     const [dropdown, setDropDown] = useState(false);
     const user = useSelector(state => state.auth.user);  //useSelector is a hook to pick data from store
     const [modalVisible, setModalVisible] = useState(false);
+    const [buyNowModal, setBuyNowModal] = useState(false);
     const [imgModal, setImgModal] = useState(true);
     const likePng = require('./images/like (1).png');
     const AnimatedImage = Animated.createAnimatedComponent(Image);
@@ -113,56 +115,8 @@ const BookInfo = ({ navigation, route }) => {
 
 
     }
-    //If you have a component that re-renders frequently, re-creating functions can lead to unnecessary memory usage and slight performance degradation.
-    // /Using useCallback ensures that the incrementCount and decrementCount functions are only re-created when their dependencies change. If we failed to give when useState rerenders new function will be created again and again
-    const incrementCount = useCallback(() => {
-
-        setCounter((currentCount) => currentCount + 1);
-    }, []);
-
-    const decrementCount = useCallback(() => {
-        setCounter((currentCount) => currentCount - 1);
-    }, []);
-
-    const MAX_SLIDE_OFFSET = counterWidth * 0.3;
-    const dragX = useSharedValue(0);
-    const handleGesture = useAnimatedGestureHandler({
-
-        onActive: (e) => {
-            dragX.value = e.translationX,
-                //If e.translationX is greater than -MAX_SLIDE_OFFSET, it returns e.translationX. If e.translationX is less than -MAX_SLIDE_OFFSET, it returns -MAX_SLIDE_OFFSET. This effectively sets the minimum value of dragX.value to -MAX_SLIDE_OFFSET.
-                dragX.value = Math.min(Math.max(
-                    e.translationX,
-                    -MAX_SLIDE_OFFSET,
-
-                ), MAX_SLIDE_OFFSET);
 
 
-
-        },
-        onEnd: (e) => {
-            dragX.value = withTiming(0);
-            if (dragX.value === MAX_SLIDE_OFFSET) {
-                // Increment
-                runOnJS(incrementCount)();
-            } else if (dragX.value === -MAX_SLIDE_OFFSET) {
-                // Decrement
-                runOnJS(decrementCount)();
-            }
-        }
-    });
-
-    const dragContainer = useAnimatedStyle(() => {
-        return {
-            transform: [
-                {
-                    translateX: dragX.value
-                }
-            ]
-        }
-    }
-    )
-    const AnimatedText = Animated.createAnimatedComponent(Text);
 
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
@@ -200,6 +154,7 @@ const BookInfo = ({ navigation, route }) => {
                             </TapGestureHandler>
                         </View>
                         <View style={[styles.bookDetails]}>
+
                             <Text style={{ fontFamily: 'Poppins', fontSize: 35 }}>{data.bookName}</Text>
                             <View style={[styles.Rating]}>
                                 <TouchableOpacity onPress={handleRating}>
@@ -227,26 +182,40 @@ const BookInfo = ({ navigation, route }) => {
                                 <Text style={{ fontFamily: 'Poppins', fontSize: 12, color: 'grey', marginLeft: 23 }}>{data.overview}</Text>
 
                             </View>
-                            <View style={[styles.CounterCont]}>
-                                <PanGestureHandler onGestureEvent={handleGesture}>
-                                    <Animated.View style={[styles.Counter]}>
-                                        <FontAwesome name='minus' size={15} color='white' style={{}} />
 
-                                        <Animated.View style={[styles.countDesign, dragContainer]}>
-                                            <AnimatedText>{counter}</AnimatedText>
-                                        </Animated.View>
+                            <View style={[styles.bookBtnCont,{bottom:0}]}>
+                                <TouchableOpacity style={styles.PreviewBtn} onPress={() => navigation.navigate("BookTabs")}>
+                                    <FontAwesome name='comment' size={25} color='white' style={{}} />
 
-                                        <FontAwesome name='plus' size={15} color='white' style={{}} />
+                                    {/* <Text style={{ fontSize: 17, color: 'white', fontWeight: '500', fontFamily: 'Poppins' }}>
+                                        Read Previes
+                                    </Text> */}
+                                </TouchableOpacity>
+                                <TouchableOpacity style={styles.bookBtn} onPress={() => setBuyNowModal(true)}>
+                                    <FontAwesome name='shopping-cart' size={20} color='white' style={{}} />
+                                    <Text style={{ fontSize: 17, color: 'white', fontWeight: '500', fontFamily: 'Poppins' }}>
+                                        Buy now
+                                    </Text>
 
 
-
-
-                                    </Animated.View>
-                                </PanGestureHandler>
+                                </TouchableOpacity>
                             </View>
+
                         </View>
                     </Animated.View>
                 </ScrollView>
+                {buyNowModal && (
+                    <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={buyNowModal}
+                        onRequestClose={() => setBuyNowModal(false)}
+                    >
+                        <View style={styles.modalContainer}>
+                            <BuyNowModal data={data} onClose={() => setBuyNowModal(false)} />
+                        </View>
+                    </Modal>
+                )}
             </SafeAreaView>
         </GestureHandlerRootView >
     );
@@ -300,7 +269,8 @@ const styles = StyleSheet.create({
     },
     bookDetails: {
         paddingLeft: 30,
-        paddingRight: 20
+        paddingRight: 20,
+
 
     },
     Rating: {
@@ -321,27 +291,44 @@ const styles = StyleSheet.create({
         height: 40
 
     },
-    CounterCont: {
-        flex: 1,
-        alignItems: 'flex-end',
 
-    },
-    Counter: {
-        width: counterWidth,
-        padding: 10,
-        borderRadius: 15,
+    bookBtnCont: {
+        flex: 1,
+        paddingBottom: 10,
         flexDirection: 'row',
-        justifyContent: 'space-between',
-        backgroundColor: 'black'
+        gap: 8,
+
+        alignItems: 'flex-end',
+        marginTop: 5
     },
-    countDesign: {
-        zIndex: 10,
-        borderRadius: 300,
-        width: 20,
+    PreviewBtn: {
+        width: width / 7,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: 'grey'
-    }
+        backgroundColor: 'black',
+        padding: 10,
+        borderRadius: 10,
+        flexDirection: 'row',
 
+    },
+    bookBtn: {
+        width: width / 1.5,
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap:10,
+        justifyContent: 'center',
+        backgroundColor: '#D4A056',
+        padding: 10,
+        borderRadius: 10,
+     
+
+    },
+
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        backgroundColor: 'rgba(0,0,0,0.6)',
+        margin: 0, // Ensures the modal starts from the bottom
+    },
 
 })

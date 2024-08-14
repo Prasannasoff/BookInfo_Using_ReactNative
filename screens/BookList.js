@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import axios from 'axios';
 import { FontAwesome } from '@expo/vector-icons';
 import {
@@ -21,7 +21,7 @@ function BookList({ navigation, route }) {
     const [dupBook, setDupBook] = useState([]);
     const [name, setName] = useState('');
     const [popularBooks, setPopularBook] = useState([]);
-
+    const [displayAuthor, setDisplayAuthor] = useState(true);
 
     const category = route.params?.category || '';
     console.log(category)
@@ -76,13 +76,32 @@ function BookList({ navigation, route }) {
         };
         getData();
     }, [category]);
+    const uniqueAuthorsList = [];
+    const uniqueAuthors = useMemo(() => { // It ensures that the result of an expensive computation is only recalculated when its dependencies change.
+        const authorsSet = new Set();
 
+
+        bookData.forEach(book => {
+            if (book.author && !authorsSet.has(book.author)) {
+                authorsSet.add(book.author);
+                uniqueAuthorsList.push({
+                    author: book.author,
+                    authorImage: book.authorImage, // Make sure you have an image property in bookData
+                });
+            }
+        });
+
+        return uniqueAuthorsList;
+    }, [bookData]);
 
     const filterBySearch = (text) => {
         setName(text);
+        setDisplayAuthor(false);
         if (text === '') {
             setBookData(popularBooks); // Reset to popular books when search is cleared
+            setDisplayAuthor(true);
         }
+
         else {
 
             const filteredBooks = dupBook.filter(book =>
@@ -121,6 +140,7 @@ function BookList({ navigation, route }) {
         );
     };
     const displayAuthors = ({ item }) => {
+
         return (
             <View>
 
@@ -135,7 +155,9 @@ function BookList({ navigation, route }) {
                 </View>
             </View>
         );
-    };
+    }
+
+
 
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
@@ -159,6 +181,7 @@ function BookList({ navigation, route }) {
                     </View>
 
                     <View style={[styles.Scroll]}>
+
                         <FlatList
                             data={bookData}
                             renderItem={displayBooks}
@@ -166,22 +189,29 @@ function BookList({ navigation, route }) {
                             horizontal={true}
                             showsHorizontalScrollIndicator={false}
                         />
+
                     </View>
-                    <View style={[styles.header]}>
-                        <Text style={{ fontSize: 35, fontFamily: 'Poppins', paddingTop: 10, position: 'relative' }}>Author</Text>
-                        <Text style={{ fontSize: 13, fontFamily: 'Poppins', paddingTop: 10, position: 'relative' }}>see All</Text>
-                    </View>
-                    <View style={[styles.Scroll2]}>
-                        <FlatList
-                            data={bookData}
-                            renderItem={displayAuthors}
-                            keyExtractor={(item) => item._id}
-                            horizontal={true}
-                            showsHorizontalScrollIndicator={false}
-                        />
-                    </View>
+                    {displayAuthor &&
+                        <View>
+                            <View style={[styles.header]}>
+                                <Text style={{ fontSize: 35, fontFamily: 'Poppins', paddingTop: 10, position: 'relative' }}>Author</Text>
+                                <Text style={{ fontSize: 13, fontFamily: 'Poppins', paddingTop: 10, position: 'relative' }}>see All</Text>
+                            </View>
+                            <View style={[styles.Scroll2]}>
+
+                                <FlatList
+                                    data={uniqueAuthors}
+                                    renderItem={displayAuthors}
+                                    keyExtractor={(item) => item._id}
+                                    horizontal={true}
+                                    showsHorizontalScrollIndicator={false}
+                                />
+
+                            </View>
 
 
+                        </View>
+                    }
                 </View>
 
             </SafeAreaView>

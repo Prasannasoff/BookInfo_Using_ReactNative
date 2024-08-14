@@ -66,5 +66,25 @@ router.delete('/deleteFavourites', async (req, res) => {
 
 
 
+});
+router.post('/purchaseBook', async (req, res) => {
+    try {
+        const { uid, data, counter } = req.body;
+        const price = data.price * counter;
+        const user = await userModal.findOne({ uid: uid });
+        user.PurchasedBooks.push({ _id: data._id, bookCount: counter, amountPaid: price });
+
+        await user.save();
+        const book = await bookModel.findOne({ _id: data._id });
+        book.No_of_Puchased = (book.No_of_Puchased) + counter;
+
+        await book.save();
+        res.send("Book Purchased Successfully");
+    }
+    catch (error) {
+        console.log(error)
+        res.send(error);
+    }
+
 })
 module.exports = router
