@@ -86,5 +86,42 @@ router.post('/purchaseBook', async (req, res) => {
         res.send(error);
     }
 
+});
+router.get('/getPurchasedBook', async (req, res) => {
+
+    try {
+        const uid = req.query.uid;
+        const user = await userModal.findOne({ uid: uid });
+
+        //Promise.all allows all the fetch operations to happen in parallel, which is much faster.
+        //Promise.all combined with await allows you to efficiently handle multiple asynchronous operations and ensures that you only proceed once all the necessary data has been fetched.
+        const purchasedBook = await Promise.all(
+            user.PurchasedBooks.map(async (book) => {
+                const bookPurchased = await bookModel.findOne({ _id: book._id }).lean()//lean(): This method is used to return plain JavaScript objects instead of Mongoose documents
+                if (bookPurchased) {
+                    const bookDetails = {
+                        bookName: bookPurchased.bookName,
+                        author: bookPurchased.author,
+                        image: bookPurchased.image,
+                        category: bookPurchased.category,
+                        rating:bookPurchased.rating
+                    };
+                    // Include the additional purchase details
+                    return {
+
+                        ...bookDetails,//The spread operator (...) is used to take all the properties of the book object and "spread" them into a new object.
+                        bookCount: book.bookCount,
+                        amountPaid: book.amountPaid
+                    };
+                }
+            })
+        )
+        console.log(purchasedBook)
+        res.send(purchasedBook);
+    }
+    catch (error) {
+        console.log(error)
+        res.send(error);
+    }
 })
 module.exports = router

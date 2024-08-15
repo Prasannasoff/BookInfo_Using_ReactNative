@@ -14,7 +14,7 @@ import Carousel from './screens/carosal';
 import userRegister from './screens/userRegister';
 import userLogin from './screens/userLogin';
 import FavouriteScreen from './screens/FavouriteScreen';
-
+import BookPurchasedScreen from './screens/BookPurchased';
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
 
@@ -65,6 +65,7 @@ const MainTabNavigator = () => {
       <Tab.Screen name="BookTabs" component={BookStackNavigator} options={{ headerShown: false }} />
       <Tab.Screen name="AddScreen" component={AddScreen} options={{ headerShown: false }} />
       <Tab.Screen name="FavouriteScreen" component={FavouriteScreen} options={{ headerShown: false }} />
+      <Tab.Screen name="PurchaseScreen" component={BookPurchasedScreen} options={{ headerShown: false }} />
 
 
 

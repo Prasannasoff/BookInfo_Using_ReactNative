@@ -175,7 +175,7 @@ const BookInfo = ({ navigation, route }) => {
 
                                 </View>}
                                 <Text style={{ fontFamily: 'Poppins', fontSize: 12 }}>{data.rating}/5</Text>
-                                <Text style={{ fontFamily: 'Poppins', fontSize: 12, color: 'grey' }}>No.of purchased{data.No_of_Purchased}</Text>
+                                <Text style={{ fontFamily: 'Poppins', fontSize: 12, color: 'grey' }}> {data.No_of_Puchased} books purchased</Text>
                             </View>
                             <View style={[styles.desc]}>
                                 <Text style={{ fontFamily: 'Poppins', fontSize: 20 }}>Description</Text>
@@ -183,7 +183,7 @@ const BookInfo = ({ navigation, route }) => {
 
                             </View>
 
-                            <View style={[styles.bookBtnCont,{bottom:0}]}>
+                            <View style={[styles.bookBtnCont, { bottom: 0 }]}>
                                 <TouchableOpacity style={styles.PreviewBtn} onPress={() => navigation.navigate("BookTabs")}>
                                     <FontAwesome name='comment' size={25} color='white' style={{}} />
 
@@ -315,12 +315,12 @@ const styles = StyleSheet.create({
         width: width / 1.5,
         flexDirection: 'row',
         alignItems: 'center',
-        gap:10,
+        gap: 10,
         justifyContent: 'center',
         backgroundColor: '#D4A056',
         padding: 10,
         borderRadius: 10,
-     
+
 
     },
 
