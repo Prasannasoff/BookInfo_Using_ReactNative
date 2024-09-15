@@ -14,7 +14,7 @@ const userSchema = mongoose.Schema({
         {
             bookId: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'bookModel'
+                ref: 'bookModal'
             },
 
             userRating: {
@@ -25,11 +25,11 @@ const userSchema = mongoose.Schema({
                 type: String,
                 default: null
             },
-            bookCount:{
-                type:Number
+            bookCount: {
+                type: Number
             },
-            amountPaid:{
-                type:Number
+            amountPaid: {
+                type: Number
             }
         }
     ]

@@ -33,7 +33,7 @@ function BookList({ navigation, route }) {
                 // const response = await axios.get(
                 //     'https://www.googleapis.com/books/v1/volumes?q=subject:fiction&maxResults=40'
                 // );
-                const response = await axios.get('http://192.168.0.106:5000/api/bookDetails/getAllBooks');
+                const response = await axios.get('http://192.168.0.105:5000/api/bookDetails/getAllBooks');
                 const books = response.data;
                 // const sortedBooks = books
                 //     .filter((book) => book.volumeInfo.averageRating && book.volumeInfo.ratingsCount)

@@ -14,9 +14,12 @@ import Carousel from './screens/carosal';
 import userRegister from './screens/userRegister';
 import userLogin from './screens/userLogin';
 import FavouriteScreen from './screens/FavouriteScreen';
+import AdminScreen from './screens/AdminScreen';
 import BookPurchasedScreen from './screens/BookPurchased';
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
+import { useSelector } from 'react-redux'
+
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -41,6 +44,7 @@ const UserTabNavigator = () => {
 };
 
 const MainTabNavigator = () => {
+  const user = useSelector(state => state.auth.user);
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -61,11 +65,19 @@ const MainTabNavigator = () => {
         tabBarLabelStyle: styles.tabBarLabelStyle,
       })}
     >
-      <Tab.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
-      <Tab.Screen name="BookTabs" component={BookStackNavigator} options={{ headerShown: false }} />
-      <Tab.Screen name="AddScreen" component={AddScreen} options={{ headerShown: false }} />
-      <Tab.Screen name="FavouriteScreen" component={FavouriteScreen} options={{ headerShown: false }} />
-      <Tab.Screen name="PurchaseScreen" component={BookPurchasedScreen} options={{ headerShown: false }} />
+      {user.uid == "ZsIuvs9dOiPMmNHIiymyLZ44Oxx2" ?
+        <>
+          <Tab.Screen name="AddScreen" component={AddScreen} />
+          <Tab.Screen name="AdminScreen" component={AdminScreen} />
+        </>
+        :
+        <>
+          <Tab.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+          <Tab.Screen name="BookTabs" component={BookStackNavigator} options={{ headerShown: false }} />
+          <Tab.Screen name="FavouriteScreen" component={FavouriteScreen} options={{ headerShown: false }} />
+          <Tab.Screen name="PurchaseScreen" component={BookPurchasedScreen} options={{ headerShown: false }} />
+        </>
+      }
 
 
 

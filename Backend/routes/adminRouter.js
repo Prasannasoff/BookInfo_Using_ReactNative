@@ -2,6 +2,7 @@ const admin = require('firebase-admin');
 const express = require('express');
 const router = express.Router();
 const User = require('../Models/userModal');
+const Book = require('../Models/bookModal')
 
 admin.initializeApp({
     credential: admin.credential.cert({
@@ -52,7 +53,14 @@ router.post('/register', async (req, res) => {
         res.status(401).send({ message: 'Authentication failed', error: error.message });
     }
 });
+router.get('/getOrders', async (req, res) => {
+    const books = await Book.find({});
+    console.log("Hello");
+    const filteredBooks = books.filter(book => book.bookedUsers.length > 0);
+    console.log(filteredBooks);
+    res.send(filteredBooks);
 
+});
 
 
 module.exports = router;

@@ -75,10 +75,11 @@ function BuyNowModal({ data, onClose }) {
     }
     )
     const handlePay = async () => {
-        const { uid } = user;
+        const { uid,email } = user;
+        
 
         try {
-            const response = await axios.post('http://192.168.0.106:5000/api/bookDetails/purchaseBook', { uid, data, counter });
+            const response = await axios.post('http://192.168.0.105:5000/api/bookDetails/purchaseBook', { uid,email, data, counter });
             console.log(response.data);
         }
         catch (error) {

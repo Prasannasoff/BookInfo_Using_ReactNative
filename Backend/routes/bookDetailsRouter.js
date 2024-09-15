@@ -69,13 +69,15 @@ router.delete('/deleteFavourites', async (req, res) => {
 });
 router.post('/purchaseBook', async (req, res) => {
     try {
-        const { uid, data, counter } = req.body;
+        const { uid, email, data, counter } = req.body;
         const price = data.price * counter;
-        const user = await userModal.findOne({ uid: uid });
-        user.PurchasedBooks.push({ _id: data._id, bookCount: counter, amountPaid: price });
 
-        await user.save();
+        const user = await userModal.findOne({ uid: uid });
         const book = await bookModel.findOne({ _id: data._id });
+        user.PurchasedBooks.push({ _id: data._id, bookCount: counter, amountPaid: price });
+        book.bookedUsers.push({ userEmail: email, bookCount: counter, amountPaid: price });
+        await user.save();
+
         book.No_of_Puchased = (book.No_of_Puchased) + counter;
 
         await book.save();
@@ -104,7 +106,7 @@ router.get('/getPurchasedBook', async (req, res) => {
                         author: bookPurchased.author,
                         image: bookPurchased.image,
                         category: bookPurchased.category,
-                        rating:bookPurchased.rating
+                        rating: bookPurchased.rating
                     };
                     // Include the additional purchase details
                     return {

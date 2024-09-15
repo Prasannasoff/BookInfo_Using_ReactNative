@@ -125,7 +125,7 @@ const UserLogin = ({ navigation }) => {
             // setChangeState(true);
 
             // Send ID token to your backend
-            const response = await axios.post('http://192.168.0.106:5000/api/adminAuth/authenticate', { idToken });
+            const response = await axios.post('http://192.168.0.105:5000/api/adminAuth/authenticate', { idToken });
 
 
         } catch (error) {

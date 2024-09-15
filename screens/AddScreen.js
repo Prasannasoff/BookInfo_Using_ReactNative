@@ -39,7 +39,7 @@ export default function AddScreen() {
     const handleSubmit = async () => {
         console.log(category.value)
         try {
-            const response = await axios.post('http://192.168.0.106:5000/api/bookDetails/addBooks', data);
+            const response = await axios.post('http://192.168.0.105:5000/api/bookDetails/addBooks', data);
             console.log(response.data);
         }
         catch (error) {

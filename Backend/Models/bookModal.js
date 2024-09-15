@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+
 const bookSchema = mongoose.Schema({
     bookName: {
         type: String,
@@ -9,8 +10,8 @@ const bookSchema = mongoose.Schema({
         type: String,
         required: true,
     },
-    authorImage:{
-        type:String,
+    authorImage: {
+        type: String,
     },
     price: {
         type: Number,
@@ -35,7 +36,21 @@ const bookSchema = mongoose.Schema({
     category: {
         type: String,
         required: true
-    }
+    },
+    bookedUsers: [
+        {
+
+            userEmail: {
+                type: String
+            },
+            bookCount: {
+                type: Number
+            },
+            amountPaid: {
+                type: Number
+            }
+        }
+    ]
 
 
 },

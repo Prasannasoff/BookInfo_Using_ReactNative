@@ -13,7 +13,7 @@ const BookPurchased = () => {
         const userPurchased = async () => {
             try {
                 const uid = user.uid;
-                const response = await axios.get('http://192.168.0.106:5000/api/bookDetails/getPurchasedBook', { params: { uid } });
+                const response = await axios.get('http://192.168.0.105:5000/api/bookDetails/getPurchasedBook', { params: { uid } });
                 setPurchasedDetail(response.data);
 
             }
