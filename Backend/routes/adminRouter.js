@@ -15,12 +15,12 @@ admin.initializeApp({
 
 router.post('/authenticate', async (req, res) => {
     const idToken = req.body.idToken;
-
+    console.log("Id",idToken);
     try {
         const decodedToken = await admin.auth().verifyIdToken(idToken);
         const uid = decodedToken.uid;
         const email = decodedToken.email;
-
+        console.log("EMAIL:",email);
         let user = await User.findOne({ uid });
         if (!user) {
             return res.status(401).send({ message: 'User not found' });

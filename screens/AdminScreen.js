@@ -6,7 +6,7 @@ const AdminScreen = () => {
     const [order, setOrder] = useState([]);
     useEffect(() => {
         const getResponse = async () => {
-            const response = await axios.get("http://192.168.0.105:5000/api/adminAuth/getOrders");
+            const response = await axios.get("http://192.168.0.104:5000/api/adminAuth/getOrders");
            
             setOrder(response.data)
         }
